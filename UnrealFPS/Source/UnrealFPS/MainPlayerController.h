@@ -6,16 +6,16 @@
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
 #include "EnhancedInputLibrary.h"
-#include "PlayerMovement.generated.h"
+#include "MainPlayerController.generated.h"
 
 UCLASS()
-class UNREALFPS_API APlayerMovement : public ACharacter
+class UNREALFPS_API AMainPlayerController : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
-	APlayerMovement();
+	AMainPlayerController();
 
 protected:
 	// Called when the game starts or when spawned
@@ -27,7 +27,7 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "input")
 	class UInputMappingContext* DefaultMappingContext;
 
