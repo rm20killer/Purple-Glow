@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "InputActionValue.h"
 #include "EnhancedInputLibrary.h"
 #include "MainPlayerController.generated.h"
@@ -21,6 +22,9 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+private:
+	bool bIsCrouched = false;
+	bool bIsSprinting = false;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -43,10 +47,21 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "input")
 	class UInputAction* LookAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "input")
+	class UInputAction* CrouchAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "input")
+	class UInputAction* SprintAction;
+
 
 	void Move(const FInputActionValue& Value);
 
 	void Look(const FInputActionValue& Value);
 
 	void Jumping();
+
+	void Crouching();
+
+	void Sprinting();
+	
 };

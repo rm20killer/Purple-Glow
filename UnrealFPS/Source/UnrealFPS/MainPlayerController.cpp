@@ -3,6 +3,7 @@
 
 #include "MainPlayerController.h"
 #include "GameFramework/Controller.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 
@@ -49,6 +50,11 @@ void AMainPlayerController::SetupPlayerInputComponent(UInputComponent* PlayerInp
 		//Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMainPlayerController::Look);
 
+		//Crouching
+		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Triggered, this, &AMainPlayerController::Crouching);
+
+		//Sprinting
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AMainPlayerController::Sprinting);
 	}
 
 }
@@ -104,5 +110,44 @@ void AMainPlayerController::Look(const FInputActionValue& Value)
 void AMainPlayerController::Jumping()
 {
 	Jump();
+}
+
+/// <summary>
+/// if the crouch button is pressed crouch
+/// if the crouch button is released stand up
+/// </summary>
+void AMainPlayerController::Crouching()
+{
+	//while holding the crouch button crouch
+	//when the button is released stand up
+	if(bIsCrouched)
+	{
+		bIsCrouched = false;
+		UnCrouch();
+	}
+	else
+	{
+		bIsCrouched = true;
+		Crouch();
+
+	}
+}
+
+/// <summary>
+/// if the sprint button is pressed sprint
+/// if the sprint button is released stop sprinting
+/// </summary>
+void AMainPlayerController::Sprinting()
+{
+	if (bIsSprinting)
+	{
+		bIsSprinting = false;
+		GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+	}
+	else
+	{
+		bIsSprinting = true;
+		GetCharacterMovement()->MaxWalkSpeed = 1200.0f;
+	}
 }
 
