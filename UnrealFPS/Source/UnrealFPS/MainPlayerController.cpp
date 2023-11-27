@@ -55,6 +55,8 @@ void AMainPlayerController::SetupPlayerInputComponent(UInputComponent* PlayerInp
 
 		//Sprinting
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AMainPlayerController::Sprinting);
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AMainPlayerController::Sprinting);
+		
 	}
 
 }
