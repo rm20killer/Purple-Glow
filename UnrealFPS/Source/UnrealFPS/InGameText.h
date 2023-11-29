@@ -28,4 +28,5 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Objects/Text")
 	FString TextString;
+
 };

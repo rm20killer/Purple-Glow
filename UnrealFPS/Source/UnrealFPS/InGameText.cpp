@@ -11,7 +11,7 @@ AInGameText::AInGameText()
 	//Text component
 	MyText = CreateDefaultSubobject<UTextRenderComponent>(TEXT("My text Component"));
 	MyText->SetWorldSize(80.0f);
-	MyText->SetText(FText::FromString(TextString);
+	MyText->SetText(FText::FromString("TextString"));
 
 	RootComponent = MyText;
 }

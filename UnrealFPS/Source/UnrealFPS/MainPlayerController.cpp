@@ -33,6 +33,14 @@ void AMainPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (GetCharacterMovement()->IsFalling() && bIsSliding)
+	{
+		GetWorldTimerManager().PauseTimer(SlideHandle);
+	}
+	else
+	{
+		GetWorldTimerManager().UnPauseTimer(SlideHandle);
+	}
 }
 
 // Called to bind functionality to input
@@ -52,10 +60,10 @@ void AMainPlayerController::SetupPlayerInputComponent(UInputComponent* PlayerInp
 
 		//Crouching
 		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Triggered, this, &AMainPlayerController::Crouching);
-
+		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Started, this, &AMainPlayerController::Slide);
 		//Sprinting
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AMainPlayerController::Sprinting);
-		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AMainPlayerController::Sprinting);
+		
 		
 	}
 
@@ -107,11 +115,30 @@ void AMainPlayerController::Look(const FInputActionValue& Value)
 }
 
 /// <summary>
-/// if the jump button is pressed call the built in jump function
+/// when the jump button is pressed check if the player is sliding
+/// if the player is not sliding jump normally
+/// if the player is sliding add a force to the z axis to make the player jump but make sure the player is on the ground
 /// </summary>
 void AMainPlayerController::Jumping()
 {
-	Jump();
+	//check if the player is sliding
+	if (!bIsSliding)
+	{
+		//if the player is not sliding jump
+		Jump();
+	}
+	else
+	{
+		//check if the player is on the ground
+		if(!GetCharacterMovement()->IsFalling())
+		{
+			//get the direction the player is moving
+			FVector Direction = GetCharacterMovement()->Velocity.GetSafeNormal();
+			Direction.Z = 1.0f;
+			//add a force to the direction the player is moving
+			GetCharacterMovement()->AddImpulse(Direction * 600.0f, true);
+		}
+	}
 }
 
 /// <summary>
@@ -120,18 +147,16 @@ void AMainPlayerController::Jumping()
 /// </summary>
 void AMainPlayerController::Crouching()
 {
-	//while holding the crouch button crouch
-	//when the button is released stand up
 	if(bIsCrouched)
 	{
-		bIsCrouched = false;
+		GetCharacterMovement()->MaxWalkSpeedCrouched = 300.0f;
 		UnCrouch();
+		bIsCrouched = false;
 	}
 	else
 	{
-		bIsCrouched = true;
 		Crouch();
-
+		bIsCrouched = true;
 	}
 }
 
@@ -143,6 +168,7 @@ void AMainPlayerController::Sprinting()
 {
 	if (bIsSprinting)
 	{
+		Slide();
 		bIsSprinting = false;
 		GetCharacterMovement()->MaxWalkSpeed = 600.0f;
 	}
@@ -151,5 +177,47 @@ void AMainPlayerController::Sprinting()
 		bIsSprinting = true;
 		GetCharacterMovement()->MaxWalkSpeed = 1200.0f;
 	}
+}
+
+/// <summary>
+/// check if the player is moving fast enough to slide
+/// if the player is moving fast enough slide by increasing the max walk speed
+/// if the player is not moving fast enough stop sliding by decreasing the max walk speed
+/// </summary>
+void AMainPlayerController::Slide()
+{
+	if (GetCharacterMovement()->Velocity.Size() > 700.0f)
+	{
+		bIsSliding = true;
+		GetCharacterMovement()->MaxWalkSpeed = 1200.0f;
+		GetCharacterMovement()->MaxWalkSpeedCrouched = 1200.0f;
+		//after 2 seconds stop sliding
+		GetWorldTimerManager().SetTimer(SlideHandle, this, &AMainPlayerController::StopSliding, 1.2f, false);
+	}
+	else
+	{
+		//cancel timer
+		GetWorldTimerManager().ClearTimer(SlideHandle);
+		bIsSliding = false;
+		GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+		GetCharacterMovement()->MaxWalkSpeedCrouched = 300.0f;
+	}
+
+}
+
+void AMainPlayerController::StopSliding()
+{
+	bIsSliding = false;
+	if (bIsSprinting)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 1200.0f;
+		GetCharacterMovement()->MaxWalkSpeedCrouched = 1200.0f;
+	}
+	else
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+		GetCharacterMovement()->MaxWalkSpeedCrouched = 300.0f;
+	}
+	UnCrouch();
 }
 

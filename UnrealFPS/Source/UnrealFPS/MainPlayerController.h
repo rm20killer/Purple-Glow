@@ -25,6 +25,8 @@ protected:
 private:
 	bool bIsCrouched = false;
 	bool bIsSprinting = false;
+	bool bIsSliding = false;
+	FTimerHandle SlideHandle;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -63,5 +65,9 @@ public:
 	void Crouching();
 
 	void Sprinting();
+
+	void Slide();
+
+	void StopSliding();
 	
 };
