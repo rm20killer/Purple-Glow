@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Weapon.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "InputActionValue.h"
@@ -54,7 +55,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "input")
 	class UInputAction* SprintAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "input")
+	class UInputAction* FireAction;
 
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapons")
+	TSubclassOf<class AFPSProjectile> ProjectileClass;
 
 	void Move(const FInputActionValue& Value);
 
@@ -69,5 +75,7 @@ public:
 	void Slide();
 
 	void StopSliding();
+
+	void Shot();
 	
 };

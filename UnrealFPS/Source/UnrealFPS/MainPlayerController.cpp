@@ -12,7 +12,6 @@ AMainPlayerController::AMainPlayerController()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
 }
 
 // Called when the game starts or when spawned
@@ -64,7 +63,10 @@ void AMainPlayerController::SetupPlayerInputComponent(UInputComponent* PlayerInp
 		//Sprinting
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AMainPlayerController::Sprinting);
 		
-		
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AMainPlayerController::Sprinting);
+
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &AMainPlayerController::Shot);
+
 	}
 
 }
@@ -219,5 +221,14 @@ void AMainPlayerController::StopSliding()
 		GetCharacterMovement()->MaxWalkSpeedCrouched = 300.0f;
 	}
 	UnCrouch();
+}
+
+void AMainPlayerController::Shot()
+{
+	UWeapon* Weapon = Cast<UWeapon>(GetComponentByClass(UWeapon::StaticClass()));
+	if (Weapon)
+	{
+		Weapon->Fire();
+	}
 }
 
