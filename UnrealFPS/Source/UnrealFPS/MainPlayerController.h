@@ -28,6 +28,9 @@ private:
 	bool bIsSprinting = false;
 	bool bIsSliding = false;
 	FTimerHandle SlideHandle;
+	FTimerHandle ShotHandle;
+	AWeapon* Weapon;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -59,9 +62,6 @@ public:
 	class UInputAction* FireAction;
 
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapons")
-	TSubclassOf<class AFPSProjectile> ProjectileClass;
-
 	void Move(const FInputActionValue& Value);
 
 	void Look(const FInputActionValue& Value);
@@ -77,5 +77,7 @@ public:
 	void StopSliding();
 
 	void Shot();
-	
+	void fire();
+	void StopShot();
+
 };

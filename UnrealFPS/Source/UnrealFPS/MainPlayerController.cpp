@@ -25,6 +25,16 @@ void AMainPlayerController::BeginPlay()
 		}
 	}
 	
+	//get all atached actors and check if any of them are a weapon
+	TArray<AActor*> AttachedActors;
+	GetAttachedActors(AttachedActors);
+	for (AActor* Actor : AttachedActors)
+	{
+		if (Actor->IsA(AWeapon::StaticClass()))
+		{
+			Weapon = Cast<AWeapon>(Actor);
+		}
+	}
 }
 
 // Called every frame
@@ -65,8 +75,8 @@ void AMainPlayerController::SetupPlayerInputComponent(UInputComponent* PlayerInp
 		
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AMainPlayerController::Sprinting);
 
-		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &AMainPlayerController::Shot);
-
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, this, &AMainPlayerController::Shot);
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Completed, this, &AMainPlayerController::StopShot);
 	}
 
 }
@@ -108,7 +118,6 @@ void AMainPlayerController::Move(const FInputActionValue& Value)
 void AMainPlayerController::Look(const FInputActionValue& Value)
 {
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
-
 	if (Controller != nullptr)
 	{
 		AddControllerYawInput(LookAxisVector.X);
@@ -225,10 +234,33 @@ void AMainPlayerController::StopSliding()
 
 void AMainPlayerController::Shot()
 {
-	UWeapon* Weapon = Cast<UWeapon>(GetComponentByClass(UWeapon::StaticClass()));
-	if (Weapon)
-	{
-		Weapon->Fire();
-	}
+	//create a timed loop to fire the weapon
+	GetWorldTimerManager().SetTimer(ShotHandle, this, &AMainPlayerController::fire, 0.1f, true);
 }
 
+void AMainPlayerController::StopShot()
+{
+	//debug
+	UE_LOG(LogTemp, Warning, TEXT("StopShot"));
+	GetWorldTimerManager().ClearTimer(ShotHandle);
+}
+
+void AMainPlayerController::fire()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Shot"));
+
+
+	if (Weapon)
+	{
+		// Get the camera transform.
+		FVector CameraLocation;
+		FRotator CameraRotation;
+		GetActorEyesViewPoint(CameraLocation, CameraRotation);
+
+		//debug
+		//create a timed loop to fire the weapon
+		GetWorldTimerManager().SetTimer(ShotHandle, this, &AMainPlayerController::Shot, 0.1f, true);
+		Weapon->Fire(CameraLocation, CameraRotation, this);
+
+	}
+}
