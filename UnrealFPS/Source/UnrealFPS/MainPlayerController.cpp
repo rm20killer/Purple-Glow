@@ -12,7 +12,6 @@ AMainPlayerController::AMainPlayerController()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
 }
 
 // Called when the game starts or when spawned
@@ -26,6 +25,16 @@ void AMainPlayerController::BeginPlay()
 		}
 	}
 	
+	//get all atached actors and check if any of them are a weapon
+	TArray<AActor*> AttachedActors;
+	GetAttachedActors(AttachedActors);
+	for (AActor* Actor : AttachedActors)
+	{
+		if (Actor->IsA(AWeapon::StaticClass()))
+		{
+			Weapon = Cast<AWeapon>(Actor);
+		}
+	}
 }
 
 // Called every frame
@@ -63,8 +72,9 @@ void AMainPlayerController::SetupPlayerInputComponent(UInputComponent* PlayerInp
 		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Started, this, &AMainPlayerController::Slide);
 		//Sprinting
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AMainPlayerController::Sprinting);
-		
-		
+
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, this, &AMainPlayerController::Shot);
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Completed, this, &AMainPlayerController::StopShot);
 	}
 
 }
@@ -106,7 +116,6 @@ void AMainPlayerController::Move(const FInputActionValue& Value)
 void AMainPlayerController::Look(const FInputActionValue& Value)
 {
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
-
 	if (Controller != nullptr)
 	{
 		AddControllerYawInput(LookAxisVector.X);
@@ -168,14 +177,15 @@ void AMainPlayerController::Sprinting()
 {
 	if (bIsSprinting)
 	{
-		Slide();
+		UE_LOG(LogTemp, Warning, TEXT("stop Sprinting"));
 		bIsSprinting = false;
 		GetCharacterMovement()->MaxWalkSpeed = 600.0f;
 	}
 	else
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Sprinting"));
 		bIsSprinting = true;
-		GetCharacterMovement()->MaxWalkSpeed = 1200.0f;
+		GetCharacterMovement()->MaxWalkSpeed = 1000.0f;
 	}
 }
 
@@ -189,7 +199,7 @@ void AMainPlayerController::Slide()
 	if (GetCharacterMovement()->Velocity.Size() > 700.0f)
 	{
 		bIsSliding = true;
-		GetCharacterMovement()->MaxWalkSpeed = 1200.0f;
+		GetCharacterMovement()->MaxWalkSpeed = 1000.0f;
 		GetCharacterMovement()->MaxWalkSpeedCrouched = 1200.0f;
 		//after 2 seconds stop sliding
 		GetWorldTimerManager().SetTimer(SlideHandle, this, &AMainPlayerController::StopSliding, 1.2f, false);
@@ -210,8 +220,8 @@ void AMainPlayerController::StopSliding()
 	bIsSliding = false;
 	if (bIsSprinting)
 	{
-		GetCharacterMovement()->MaxWalkSpeed = 1200.0f;
-		GetCharacterMovement()->MaxWalkSpeedCrouched = 1200.0f;
+		GetCharacterMovement()->MaxWalkSpeed = 1000.0f;
+		GetCharacterMovement()->MaxWalkSpeedCrouched = 300.0f;
 	}
 	else
 	{
@@ -221,3 +231,35 @@ void AMainPlayerController::StopSliding()
 	UnCrouch();
 }
 
+void AMainPlayerController::Shot()
+{
+	//create a timed loop to fire the weapon
+	GetWorldTimerManager().SetTimer(ShotHandle, this, &AMainPlayerController::fire, 0.1f, true);
+}
+
+void AMainPlayerController::StopShot()
+{
+	//debug
+	UE_LOG(LogTemp, Warning, TEXT("StopShot"));
+	GetWorldTimerManager().ClearTimer(ShotHandle);
+}
+
+void AMainPlayerController::fire()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Shot"));
+
+
+	if (Weapon)
+	{
+		// Get the camera transform.
+		FVector CameraLocation;
+		FRotator CameraRotation;
+		GetActorEyesViewPoint(CameraLocation, CameraRotation);
+
+		//debug
+		//create a timed loop to fire the weapon
+		GetWorldTimerManager().SetTimer(ShotHandle, this, &AMainPlayerController::Shot, 0.1f, true);
+		Weapon->Fire(CameraLocation, CameraRotation, this);
+
+	}
+}

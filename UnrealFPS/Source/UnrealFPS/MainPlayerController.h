@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Weapon.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "InputActionValue.h"
@@ -27,6 +28,9 @@ private:
 	bool bIsSprinting = false;
 	bool bIsSliding = false;
 	FTimerHandle SlideHandle;
+	FTimerHandle ShotHandle;
+	AWeapon* Weapon;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -54,6 +58,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "input")
 	class UInputAction* SprintAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "input")
+	class UInputAction* FireAction;
 
 
 	void Move(const FInputActionValue& Value);
@@ -69,5 +75,9 @@ public:
 	void Slide();
 
 	void StopSliding();
-	
+
+	void Shot();
+	void fire();
+	void StopShot();
+
 };
