@@ -72,8 +72,6 @@ void AMainPlayerController::SetupPlayerInputComponent(UInputComponent* PlayerInp
 		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Started, this, &AMainPlayerController::Slide);
 		//Sprinting
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AMainPlayerController::Sprinting);
-		
-		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AMainPlayerController::Sprinting);
 
 		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, this, &AMainPlayerController::Shot);
 		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Completed, this, &AMainPlayerController::StopShot);
@@ -179,14 +177,15 @@ void AMainPlayerController::Sprinting()
 {
 	if (bIsSprinting)
 	{
-		Slide();
+		UE_LOG(LogTemp, Warning, TEXT("stop Sprinting"));
 		bIsSprinting = false;
 		GetCharacterMovement()->MaxWalkSpeed = 600.0f;
 	}
 	else
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Sprinting"));
 		bIsSprinting = true;
-		GetCharacterMovement()->MaxWalkSpeed = 1200.0f;
+		GetCharacterMovement()->MaxWalkSpeed = 1000.0f;
 	}
 }
 
@@ -200,7 +199,7 @@ void AMainPlayerController::Slide()
 	if (GetCharacterMovement()->Velocity.Size() > 700.0f)
 	{
 		bIsSliding = true;
-		GetCharacterMovement()->MaxWalkSpeed = 1200.0f;
+		GetCharacterMovement()->MaxWalkSpeed = 1000.0f;
 		GetCharacterMovement()->MaxWalkSpeedCrouched = 1200.0f;
 		//after 2 seconds stop sliding
 		GetWorldTimerManager().SetTimer(SlideHandle, this, &AMainPlayerController::StopSliding, 1.2f, false);
@@ -221,8 +220,8 @@ void AMainPlayerController::StopSliding()
 	bIsSliding = false;
 	if (bIsSprinting)
 	{
-		GetCharacterMovement()->MaxWalkSpeed = 1200.0f;
-		GetCharacterMovement()->MaxWalkSpeedCrouched = 1200.0f;
+		GetCharacterMovement()->MaxWalkSpeed = 1000.0f;
+		GetCharacterMovement()->MaxWalkSpeedCrouched = 300.0f;
 	}
 	else
 	{
