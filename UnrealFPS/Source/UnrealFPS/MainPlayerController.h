@@ -34,50 +34,55 @@ private:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
 	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "input")
-	class UInputMappingContext* DefaultMappingContext;
+	UInputMappingContext* DefaultMappingContext;
 
+
+
+
+	//movement
+	// - input action
 	//Jump button
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "input")
-	class UInputAction* JumpAction;
-
+	UInputAction* JumpAction;
 	//Move button
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "input")
-	class UInputAction* MoveAction;
-
+	UInputAction* MoveAction;
 	//Look button
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "input")
-	class UInputAction* LookAction;
-
+	UInputAction* LookAction;
+	//crouch button
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "input")
-	class UInputAction* CrouchAction;
-
+	UInputAction* CrouchAction;
+	//sprint button
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "input")
-	class UInputAction* SprintAction;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "input")
-	class UInputAction* FireAction;
+	UInputAction* SprintAction;
 
-
+	// - Move functions
 	void Move(const FInputActionValue& Value);
-
 	void Look(const FInputActionValue& Value);
-
 	void Jumping();
-
 	void Crouching();
-
 	void Sprinting();
-
 	void Slide();
-
 	void StopSliding();
 
+	//Weapons
+	// - weapons input
+	//fire button
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "input")
+	UInputAction* FireAction;
+	//reload button
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "input")
+	UInputAction* ReloadAction;
+	// - weapons functions
 	void Shot();
-	void fire();
 	void StopShot();
+	void Reload();
 
+	
+	
 };
