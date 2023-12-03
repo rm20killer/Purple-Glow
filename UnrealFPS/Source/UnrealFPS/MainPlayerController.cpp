@@ -25,7 +25,7 @@ void AMainPlayerController::BeginPlay()
 		}
 	}
 	
-	//get all atached actors and check if any of them are a weapon
+	//get all attached actors and check if any of them are a weapon
 	TArray<AActor*> AttachedActors;
 	GetAttachedActors(AttachedActors);
 	for (AActor* Actor : AttachedActors)
@@ -49,6 +49,14 @@ void AMainPlayerController::Tick(float DeltaTime)
 	else
 	{
 		GetWorldTimerManager().UnPauseTimer(SlideHandle);
+	}
+
+	if(Weapon)
+	{
+		FVector CameraLocation;
+		FRotator CameraRotation;
+		GetActorEyesViewPoint(CameraLocation, CameraRotation);
+		Weapon->UpdateLoc(CameraLocation, CameraRotation);
 	}
 }
 
@@ -75,20 +83,23 @@ void AMainPlayerController::SetupPlayerInputComponent(UInputComponent* PlayerInp
 
 		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, this, &AMainPlayerController::Shot);
 		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Completed, this, &AMainPlayerController::StopShot);
+
+		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Started, this, &AMainPlayerController::Reload);
 	}
 
 }
 
-/// <summary>
-/// Move the player in the direction of the input
-/// if w is pressed move forward if s is pressed move backwards etc.
-/// </summary>
-/// <param name="value">Vector2D for X and Y</param>
+
+/**
+ * Move the player in the direction of the input
+ * if w is pressed move forward if s is pressed move backwards etc.
+ * @param Value Vector2D for X and Y
+ */
 void AMainPlayerController::Move(const FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
-	UE_LOG(LogTemp, Warning, TEXT("WASD pressed X: %f Y: %f"), MovementVector.X, MovementVector.Y);
+	// UE_LOG(LogTemp, Warning, TEXT("WASD pressed X: %f Y: %f"), MovementVector.X, MovementVector.Y);
 
 	if (Controller != nullptr)
 	{
@@ -108,11 +119,10 @@ void AMainPlayerController::Move(const FInputActionValue& Value)
 	}
 }
 
-/// <summary>
-/// move the camera in the direction of the mouse movement
-/// if the mouse moves right move the camera right etc.
-/// </summary>
-/// <param name="value">vectoe2D from mouse movement</param>
+/**
+ * Look around
+ * @param Value Vector2D for X and Y
+ */
 void AMainPlayerController::Look(const FInputActionValue& Value)
 {
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
@@ -177,13 +187,11 @@ void AMainPlayerController::Sprinting()
 {
 	if (bIsSprinting)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("stop Sprinting"));
 		bIsSprinting = false;
 		GetCharacterMovement()->MaxWalkSpeed = 600.0f;
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Sprinting"));
 		bIsSprinting = true;
 		GetCharacterMovement()->MaxWalkSpeed = 1000.0f;
 	}
@@ -215,6 +223,10 @@ void AMainPlayerController::Slide()
 
 }
 
+/**
+ * Change the max walk speed back to normal
+ * stop sliding
+ */
 void AMainPlayerController::StopSliding()
 {
 	bIsSliding = false;
@@ -231,35 +243,46 @@ void AMainPlayerController::StopSliding()
 	UnCrouch();
 }
 
+/**
+ * start firing the weapon
+ */
 void AMainPlayerController::Shot()
 {
 	//create a timed loop to fire the weapon
-	GetWorldTimerManager().SetTimer(ShotHandle, this, &AMainPlayerController::fire, 0.1f, true);
-}
-
-void AMainPlayerController::StopShot()
-{
-	//debug
-	UE_LOG(LogTemp, Warning, TEXT("StopShot"));
-	GetWorldTimerManager().ClearTimer(ShotHandle);
-}
-
-void AMainPlayerController::fire()
-{
-	UE_LOG(LogTemp, Warning, TEXT("Shot"));
-
-
+	//GetWorldTimerManager().SetTimer(ShotHandle, this, &AMainPlayerController::fire, 0.1f, true);
 	if (Weapon)
 	{
-		// Get the camera transform.
 		FVector CameraLocation;
 		FRotator CameraRotation;
 		GetActorEyesViewPoint(CameraLocation, CameraRotation);
+		Weapon->Shot(true, CameraLocation, CameraRotation, this);
+	}
+}
 
-		//debug
-		//create a timed loop to fire the weapon
-		GetWorldTimerManager().SetTimer(ShotHandle, this, &AMainPlayerController::Shot, 0.1f, true);
-		Weapon->Fire(CameraLocation, CameraRotation, this);
+/**
+ * stop firing the weapon
+ */
+void AMainPlayerController::StopShot()
+{
+	//debug
+	// UE_LOG(LogTemp, Warning, TEXT("StopShot"));
+	//GetWorldTimerManager().ClearTimer(ShotHandle);
+	if (Weapon)
+	{
+		FVector CameraLocation;
+		FRotator CameraRotation;
+		GetActorEyesViewPoint(CameraLocation, CameraRotation);
+		Weapon->Shot(false, CameraLocation, CameraRotation, this);
+	}
+}
 
+/**
+ * Call the reload function in the weapon class
+ */
+void AMainPlayerController::Reload()
+{
+	if(Weapon)
+	{
+		Weapon->Reload();
 	}
 }

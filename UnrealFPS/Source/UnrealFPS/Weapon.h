@@ -3,10 +3,8 @@
 #pragma once
 
 #include "FPSProjectile.h"
-#include "Components/ArrowComponent.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Camera/CameraComponent.h"
 #include "Weapon.generated.h"
 
 UCLASS()
@@ -24,6 +22,13 @@ protected:
 
 private:
 	//UCameraComponent* FPSCameraComponent;
+	int Ammo = 10;
+	bool bCanShot = true;
+	FTimerHandle ShotHandle;
+	FTimerHandle reloadHandler;
+	FVector CameraLocation;
+	FRotator CameraRotation;
+	APawn* PawnInstigator;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -33,11 +38,19 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	UStaticMeshComponent* FPSGunMesh;
-
-	//Arrow component to specify the muzzle's location
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	FVector MuzzleOffset_;
-	//class UArrowComponent* ArrowLocation;
+	FVector MuzzleOffset;
 
-	void Fire(FVector CameraLocation, FRotator CameraRotation, APawn* PawnInstigator);
+	void Shot(bool bFireStart, FVector& CameraLocation, FRotator& CameraRotation, APawn* PawnInstigator);
+	void Fire();
+	void ReloadAnimation();
+	void Reload();
+	void Reloaded();
+	void UpdateLoc(FVector& CameraLocation, FRotator& CameraRotation);
+	UPROPERTY(EditDefaultsOnly, Category = "WeaponStats")
+	int MaxAmmo;
+
+	UPROPERTY(EditDefaultsOnly, Category = "WeaponStats")
+	float FireRate;
 };
