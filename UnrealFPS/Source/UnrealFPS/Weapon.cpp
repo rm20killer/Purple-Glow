@@ -27,7 +27,6 @@ void AWeapon::BeginPlay()
 	Super::BeginPlay();
 	if (FPSGunMesh != nullptr)
 	{
-		FPSGunMesh->bCastDynamicShadow = false;
 		FPSGunMesh->CastShadow = false;
 	}
 	Ammo = MaxAmmo;
@@ -137,7 +136,7 @@ void AWeapon::ReloadAnimation()
 void AWeapon::Reload()
 {
 	//check if ammo is full
-	if (Ammo == MaxAmmo)
+	if (Ammo == MaxAmmo || bCanShot == false)
 	{
 		return;
 	}
@@ -174,3 +173,56 @@ void AWeapon::UpdateLoc(FVector& cameraLocation, FRotator& cameraRotation)
 	CameraLocation.Set(cameraLocation.X, cameraLocation.Y, cameraLocation.Z);
 	CameraRotation = cameraRotation;
 }
+
+void AWeapon::SetCanShot(bool bNewCanShot)
+{
+	this->bCanShot = bNewCanShot;
+}
+
+void AWeapon::SetAmmo(int NewAmmo)
+{
+	this->Ammo = NewAmmo;
+	if(Ammo > MaxAmmo)
+	{
+		this->Ammo = MaxAmmo;
+	}
+}
+
+void AWeapon::SetAmmo(int NewAmmo, bool bBypassMax)
+{
+	if(bBypassMax)
+	{
+		this->Ammo = NewAmmo;
+	}
+	else
+	{
+		SetAmmo(NewAmmo);
+	}
+}
+
+void AWeapon::SetMaxAmmo(int NewMaxAmmo)
+{
+	this->MaxAmmo = NewMaxAmmo;
+}
+
+void AWeapon::SetFireRate(float NewFireRate)
+{
+	this->FireRate = NewFireRate;
+}
+
+int AWeapon::GetAmmo()
+{
+	return Ammo;
+}
+
+int AWeapon::GetMaxAmmo()
+{
+	return MaxAmmo;
+}
+
+FString AWeapon::GetAmmoString()
+{
+	FString AmmoString = FString::Printf(TEXT("Ammo: %d/%d"), Ammo, MaxAmmo);
+	return AmmoString;
+}
+

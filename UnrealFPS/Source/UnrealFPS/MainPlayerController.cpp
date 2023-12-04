@@ -286,3 +286,30 @@ void AMainPlayerController::Reload()
 		Weapon->Reload();
 	}
 }
+
+FString AMainPlayerController::GetAmmoString()
+{
+	if(Weapon)
+	{
+		return Weapon->GetAmmoString();
+	}
+	return FString("00/00");
+}
+
+int AMainPlayerController::GetAmmo()
+{
+	if(Weapon)
+	{
+		return Weapon->GetAmmo();
+	}
+	return 0;
+}
+
+int AMainPlayerController::GetMaxAmmo()
+{
+	if(Weapon)
+	{
+		return Weapon->GetMaxAmmo();
+	}
+	return 0;
+}

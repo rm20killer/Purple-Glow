@@ -30,6 +30,7 @@ private:
 	FTimerHandle SlideHandle;
 	FTimerHandle ShotHandle;
 	AWeapon* Weapon;
+	// UUserWidget* AmmoWidgetInstance;
 
 public:	
 	// Called every frame
@@ -37,6 +38,9 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
+
+	// UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	// TSubclassOf<UUserWidget> AmmoWidget;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "input")
 	UInputMappingContext* DefaultMappingContext;
 
@@ -84,5 +88,11 @@ public:
 	void Reload();
 
 	
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	FString GetAmmoString();
 	
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	int GetAmmo();
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	int GetMaxAmmo();
 };
