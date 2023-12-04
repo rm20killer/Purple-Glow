@@ -92,7 +92,10 @@ public:
 	FString GetAmmoString();
 	
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
-	int GetAmmo();
+	FString GetAmmo();
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
-	int GetMaxAmmo();
+	FString GetMaxAmmo();
+
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	float GetAmmoPer();
 };

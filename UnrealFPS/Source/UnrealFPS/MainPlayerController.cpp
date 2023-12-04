@@ -10,7 +10,7 @@
 // Sets default values
 AMainPlayerController::AMainPlayerController()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 }
 
@@ -18,13 +18,15 @@ AMainPlayerController::AMainPlayerController()
 void AMainPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller)) {
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<
+			UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
-	
+
 	//get all attached actors and check if any of them are a weapon
 	TArray<AActor*> AttachedActors;
 	GetAttachedActors(AttachedActors);
@@ -51,7 +53,7 @@ void AMainPlayerController::Tick(float DeltaTime)
 		GetWorldTimerManager().UnPauseTimer(SlideHandle);
 	}
 
-	if(Weapon)
+	if (Weapon)
 	{
 		FVector CameraLocation;
 		FRotator CameraRotation;
@@ -65,7 +67,6 @@ void AMainPlayerController::SetupPlayerInputComponent(UInputComponent* PlayerInp
 {
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
-
 		//Jumping
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &AMainPlayerController::Jumping);
 
@@ -76,17 +77,19 @@ void AMainPlayerController::SetupPlayerInputComponent(UInputComponent* PlayerInp
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMainPlayerController::Look);
 
 		//Crouching
-		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Triggered, this, &AMainPlayerController::Crouching);
+		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Triggered, this,
+		                                   &AMainPlayerController::Crouching);
 		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Started, this, &AMainPlayerController::Slide);
 		//Sprinting
-		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AMainPlayerController::Sprinting);
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this,
+		                                   &AMainPlayerController::Sprinting);
 
 		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, this, &AMainPlayerController::Shot);
-		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Completed, this, &AMainPlayerController::StopShot);
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Completed, this,
+		                                   &AMainPlayerController::StopShot);
 
 		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Started, this, &AMainPlayerController::Reload);
 	}
-
 }
 
 
@@ -149,7 +152,7 @@ void AMainPlayerController::Jumping()
 	else
 	{
 		//check if the player is on the ground
-		if(!GetCharacterMovement()->IsFalling())
+		if (!GetCharacterMovement()->IsFalling())
 		{
 			//get the direction the player is moving
 			FVector Direction = GetCharacterMovement()->Velocity.GetSafeNormal();
@@ -166,7 +169,7 @@ void AMainPlayerController::Jumping()
 /// </summary>
 void AMainPlayerController::Crouching()
 {
-	if(bIsCrouched)
+	if (bIsCrouched)
 	{
 		GetCharacterMovement()->MaxWalkSpeedCrouched = 300.0f;
 		UnCrouch();
@@ -220,7 +223,6 @@ void AMainPlayerController::Slide()
 		GetCharacterMovement()->MaxWalkSpeed = 600.0f;
 		GetCharacterMovement()->MaxWalkSpeedCrouched = 300.0f;
 	}
-
 }
 
 /**
@@ -281,7 +283,7 @@ void AMainPlayerController::StopShot()
  */
 void AMainPlayerController::Reload()
 {
-	if(Weapon)
+	if (Weapon)
 	{
 		Weapon->Reload();
 	}
@@ -289,27 +291,49 @@ void AMainPlayerController::Reload()
 
 FString AMainPlayerController::GetAmmoString()
 {
-	if(Weapon)
+	if (Weapon)
 	{
 		return Weapon->GetAmmoString();
 	}
 	return FString("00/00");
 }
 
-int AMainPlayerController::GetAmmo()
+FString AMainPlayerController::GetAmmo()
 {
-	if(Weapon)
+	if (Weapon)
 	{
-		return Weapon->GetAmmo();
+		//if Ammo is less than 10 add a 0 to the front of the string
+		if (Weapon->GetAmmo() < 10)
+		{
+			return FString("0" + FString::FromInt(Weapon->GetAmmo()));
+		}
+		return FString::FromInt(Weapon->GetAmmo());
 	}
-	return 0;
+	return FString("00");
 }
 
-int AMainPlayerController::GetMaxAmmo()
+FString AMainPlayerController::GetMaxAmmo()
+{
+	if (Weapon)
+	{
+		//if MaxAmmo is less than 10 add a 0 to the front of the string
+		if (Weapon->GetMaxAmmo() < 10)
+		{
+			return FString("0" + FString::FromInt(Weapon->GetMaxAmmo()));
+		}
+		return FString::FromInt(Weapon->GetMaxAmmo());
+	}
+	return FString("00");
+}
+
+float AMainPlayerController::GetAmmoPer()
 {
 	if(Weapon)
 	{
-		return Weapon->GetMaxAmmo();
+		float Ammo = Weapon->GetAmmo();
+		float MaxAmmo = Weapon->GetMaxAmmo();
+		return Ammo / MaxAmmo;
+		// return Weapon->GetAmmo() / Weapon->GetMaxAmmo();
 	}
-	return 0;
+	return 0.0f;
 }
