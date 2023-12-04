@@ -42,6 +42,15 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	FVector MuzzleOffset;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	USoundBase* FireSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	UParticleSystem* MuzzleFlash;
+
+	//UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	//UUserWidget* AmmoWidget;
+	
 	void Shot(bool bFireStart, FVector& CameraLocation, FRotator& CameraRotation, APawn* PawnInstigator);
 	void Fire();
 	void ReloadAnimation();
@@ -53,4 +62,16 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "WeaponStats")
 	float FireRate;
+	//setters
+	void SetCanShot(bool bNewCanShot);
+	void SetAmmo(int NewAmmo);
+	void SetAmmo(int NewAmmo, bool bBypassMax);
+	void SetMaxAmmo(int NewMaxAmmo);
+	void SetFireRate(float NewFireRate);
+	
+	//getters
+	int GetAmmo();
+	int GetMaxAmmo();
+	FString GetAmmoString();
+	
 };
