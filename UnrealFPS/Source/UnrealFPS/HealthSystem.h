@@ -16,16 +16,30 @@ public:
 	// Sets default values for this component's properties
 	UHealthSystem();
 
-	void TakeDamage(int Damage);
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+	FVector MovementVelocity;
+	float Health;
+	float MaxHealth = 100;
+
+	float HealthTweenDirection;
+
+public:
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
-	float DefaultHealth;
+	float MaxHealth;
 
 	UPROPERTY(BlueprintReadOnly)
 	float Health;
 
+	float GetHealth() const { return Health; }
+	void SetHealth(float val) { Health = val; }
+
+	float GetMaxHealth() const { return MaxHealth; }
+	void SetMaxHealth(float val) { MaxHealth = val; }
+
+	void takedamage();
 };
