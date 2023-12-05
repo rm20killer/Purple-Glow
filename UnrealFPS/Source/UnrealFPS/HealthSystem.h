@@ -7,32 +7,28 @@
 #include "HealthSystem.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class UNREALFPS_API UHealthSystem : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
+public:
 	// Sets default values for this component's properties
 	UHealthSystem();
-
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
 	FVector MovementVelocity;
-	float Health;
-	float MaxHealth = 100;
 
 	float HealthTweenDirection;
 
 public:
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	float MaxHealth;
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health")
 	float Health;
 
 	float GetHealth() const { return Health; }
@@ -41,5 +37,5 @@ public:
 	float GetMaxHealth() const { return MaxHealth; }
 	void SetMaxHealth(float val) { MaxHealth = val; }
 
-	void takedamage();
+	void TakeDamage();
 };

@@ -8,6 +8,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "InputActionValue.h"
 #include "EnhancedInputLibrary.h"
+#include "Containers/Array.h"
 #include "MainPlayerController.generated.h"
 
 UCLASS()
@@ -30,9 +31,10 @@ private:
 	FTimerHandle SlideHandle;
 	FTimerHandle ShotHandle;
 	AWeapon* Weapon;
+	int selectedGun = 0;
 	// UUserWidget* AmmoWidgetInstance;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	// Called to bind functionality to input
@@ -43,8 +45,6 @@ public:
 	// TSubclassOf<UUserWidget> AmmoWidget;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "input")
 	UInputMappingContext* DefaultMappingContext;
-
-
 
 
 	//movement
@@ -82,15 +82,19 @@ public:
 	//reload button
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "input")
 	UInputAction* ReloadAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "input")
+	UInputAction* NextWeaponAction;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Weapon")
+	TArray<UChildActorComponent*> WeaponsArr;
 	// - weapons functions
 	void Shot();
 	void StopShot();
 	void Reload();
+	void ChangeGun(const FInputActionValue& Value);
 
-	
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	FString GetAmmoString();
-	
+
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	FString GetAmmo();
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
@@ -98,4 +102,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	float GetAmmoPer();
+
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void SetUpGun();
+
+	
 };

@@ -26,17 +26,6 @@ void AMainPlayerController::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
-
-	//get all attached actors and check if any of them are a weapon
-	TArray<AActor*> AttachedActors;
-	GetAttachedActors(AttachedActors);
-	for (AActor* Actor : AttachedActors)
-	{
-		if (Actor->IsA(AWeapon::StaticClass()))
-		{
-			Weapon = Cast<AWeapon>(Actor);
-		}
-	}
 }
 
 // Called every frame
@@ -89,6 +78,8 @@ void AMainPlayerController::SetupPlayerInputComponent(UInputComponent* PlayerInp
 		                                   &AMainPlayerController::StopShot);
 
 		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Started, this, &AMainPlayerController::Reload);
+		EnhancedInputComponent->BindAction(NextWeaponAction, ETriggerEvent::Triggered, this,
+		                                   &AMainPlayerController::ChangeGun);
 	}
 }
 
@@ -252,6 +243,7 @@ void AMainPlayerController::Shot()
 {
 	//create a timed loop to fire the weapon
 	//GetWorldTimerManager().SetTimer(ShotHandle, this, &AMainPlayerController::fire, 0.1f, true);
+	
 	if (Weapon)
 	{
 		FVector CameraLocation;
@@ -287,6 +279,44 @@ void AMainPlayerController::Reload()
 	{
 		Weapon->Reload();
 	}
+}
+
+void AMainPlayerController::ChangeGun(const FInputActionValue& Value)
+{
+	if (Value.Get<float>() > 0.0f)
+	{
+		++selectedGun;
+	}
+	else if (Value.Get<float>() < 0.0f)
+	{
+		--selectedGun;
+	}
+	if (selectedGun >= WeaponsArr.Num())
+	{
+		selectedGun = 0;
+	}
+	else if (selectedGun < 0)
+	{
+		selectedGun = WeaponsArr.Num() - 1;
+	}
+	StopShot();
+	for (int i = 0; i < WeaponsArr.Num(); ++i)
+	{
+		if (i == selectedGun)
+		{
+			USceneComponent* WeaponComponent = Cast<USceneComponent>(WeaponsArr[i]);
+			WeaponComponent->SetVisibility(true);
+			//cast the weapon to AWeapon
+			Weapon = Cast<AWeapon>(WeaponsArr[i]->GetChildActor());
+			
+		}
+		else
+		{
+			USceneComponent* WeaponComponent = Cast<USceneComponent>(WeaponsArr[i]);
+			WeaponComponent->SetVisibility(false);
+		}
+	}
+	
 }
 
 FString AMainPlayerController::GetAmmoString()
@@ -328,7 +358,7 @@ FString AMainPlayerController::GetMaxAmmo()
 
 float AMainPlayerController::GetAmmoPer()
 {
-	if(Weapon)
+	if (Weapon)
 	{
 		float Ammo = Weapon->GetAmmo();
 		float MaxAmmo = Weapon->GetMaxAmmo();
@@ -336,4 +366,53 @@ float AMainPlayerController::GetAmmoPer()
 		// return Weapon->GetAmmo() / Weapon->GetMaxAmmo();
 	}
 	return 0.0f;
+}
+
+void AMainPlayerController::SetUpGun()
+{
+	for (auto Element : WeaponsArr)
+	{
+		// Disable all weapons
+		USceneComponent* WeaponComponent = Cast<USceneComponent>(Element);
+		if (WeaponComponent)
+		{
+			WeaponComponent->SetVisibility(false);
+		}
+	}
+	if(WeaponsArr.Num() > 0)
+	{
+		//enable the first weapon
+		USceneComponent* WeaponComponent = Cast<USceneComponent>(WeaponsArr[0]);
+		WeaponComponent->SetVisibility(true);
+		//cast the weapon to AWeapon
+		//get child actor
+		Weapon = Cast<AWeapon>(WeaponsArr[0]->GetChildActor());
+
+
+		///TODO: remove this
+		// AActor* WeaponActor = Cast<AActor>(WeaponComponent);
+		// AWeapon* WeaponActor = Cast<AWeapon>(WeaponComponent);
+		// Weapon = (AWeapon*)WeaponsArr[0];
+		// if (AActor* WeaponActor = Cast<AActor>(WeaponsArr[0]))
+		// {
+		// }
+		// else
+		// {
+		// 	UE_LOG(LogTemp, Error, TEXT("weapon not casted"));
+		// }
+		
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("No Weapons Found"));
+	}
+
+	if(Weapon)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Weapon: %s"), *Weapon->GetName());
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("No Weapon Set"));
+	}
 }

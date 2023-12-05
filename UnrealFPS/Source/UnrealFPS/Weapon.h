@@ -11,8 +11,8 @@ UCLASS()
 class UNREALFPS_API AWeapon : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AWeapon();
 
@@ -29,16 +29,20 @@ private:
 	FVector CameraLocation;
 	FRotator CameraRotation;
 	APawn* PawnInstigator;
-public:	
+	int shotFired = 0;
+	float RecoilPitch;
+	float RecoilYaw;
+
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	TSubclassOf<class AFPSProjectile> ProjectileClass;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	UStaticMeshComponent* FPSGunMesh;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	FVector MuzzleOffset;
 
@@ -50,7 +54,7 @@ public:
 
 	//UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	//UUserWidget* AmmoWidget;
-	
+
 	void Shot(bool bFireStart, FVector& CameraLocation, FRotator& CameraRotation, APawn* PawnInstigator);
 	void Fire();
 	void ReloadAnimation();
@@ -62,16 +66,27 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "WeaponStats")
 	float FireRate;
+	UPROPERTY(EditDefaultsOnly, Category = "WeaponStats")
+	bool bTapFire;
+	UPROPERTY( EditDefaultsOnly, Category = "WeaponStats")
+	float BaseDamage;
+	UPROPERTY(EditDefaultsOnly, Category = "WeaponStats")
+	float ReloadTime;
+	UPROPERTY(EditDefaultsOnly, Category = "WeaponStats")
+	float MaxRecoilPitch;
+	UPROPERTY(EditDefaultsOnly, Category = "WeaponStats")
+	float MaxRecoilYaw;
+	UPROPERTY(EditDefaultsOnly, Category = "WeaponStats")
+	float ShotBeforeRecoil;
 	//setters
 	void SetCanShot(bool bNewCanShot);
 	void SetAmmo(int NewAmmo);
 	void SetAmmo(int NewAmmo, bool bBypassMax);
 	void SetMaxAmmo(int NewMaxAmmo);
 	void SetFireRate(float NewFireRate);
-	
+
 	//getters
 	int GetAmmo();
 	int GetMaxAmmo();
 	FString GetAmmoString();
-	
 };

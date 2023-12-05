@@ -16,9 +16,10 @@ UHealthSystem::UHealthSystem()
 
 // Called when the game starts
 void UHealthSystem::BeginPlay()
-	
 {
 	Super::BeginPlay();
 }
 
-
+void UHealthSystem::TakeDamage()
+{
+}

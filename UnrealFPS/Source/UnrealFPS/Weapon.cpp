@@ -15,6 +15,11 @@ AWeapon::AWeapon()
 	RootComponent = FPSGunMesh;
 	FireRate = 0.1f;
 	MaxAmmo = 30;
+	bTapFire = false;
+	BaseDamage = 10.0f;
+	ShotBeforeRecoil = 5;
+	MaxRecoilPitch = 5.0f;
+	MaxRecoilYaw = 5.0f;
 	MuzzleOffset.Set(80.0f, 200.0f, -20.0f);
 	CameraLocation = FVector(0.0f, 0.0f, 0.0f);
 	CameraRotation = FRotator(0.0f, 0.0f, 0.0f);
@@ -36,7 +41,7 @@ void AWeapon::BeginPlay()
 void AWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if(bCanShot == false)
+	if (bCanShot == false)
 	{
 		ReloadAnimation();
 	}
@@ -58,11 +63,16 @@ void AWeapon::Shot(bool bFireStart, FVector& cameraLocation, FRotator& cameraRot
 	if (bFireStart)
 	{
 		Fire();
-		GetWorldTimerManager().SetTimer(ShotHandle, this, &AWeapon::Fire, FireRate, true);
+		if(bTapFire == false)
+		{
+			GetWorldTimerManager().SetTimer(ShotHandle, this, &AWeapon::Fire, FireRate, true);
+		}
 	}
 	else
 	{
 		GetWorldTimerManager().ClearTimer(ShotHandle);
+		//reset recoil
+		shotFired = 0;
 	}
 }
 
@@ -73,16 +83,14 @@ void AWeapon::Shot(bool bFireStart, FVector& cameraLocation, FRotator& cameraRot
 void AWeapon::Fire()
 {
 	//check if ammo is empty or if the player is reloading
-	if(bCanShot == false)
+	if (bCanShot == false)
 	{
 		return;
 	}
-	if(Ammo > 0)
+	if (Ammo > 0)
 	{
 		--Ammo;
 		UE_LOG(LogTemp, Warning, TEXT("Ammo: %d"), Ammo);
-		// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Ammo: %d"), Ammo);
-		
 	}
 	else
 	{
@@ -94,10 +102,32 @@ void AWeapon::Fire()
 
 	if (ProjectileClass)
 	{
+		shotFired++;
 		const FVector MuzzleLocation = CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset);
-		const FRotator MuzzleRotation = CameraRotation;
-		//MuzzleRotation.Pitch += 10.0f;
+		FRotator MuzzleRotation = CameraRotation;
+		//add recoil by rotating the gun by a random amount on the pitch axis
+		if(shotFired < ShotBeforeRecoil)
+		{
+			RecoilPitch = 0.2f;
+			RecoilYaw = 0.2f;
+		}
+		else if(shotFired >= ShotBeforeRecoil)
+		{
+			//increase recoil until the recoil is at the max
+			if (RecoilPitch < MaxRecoilPitch)
+			{
+				RecoilPitch += 1.2f;
+			}
+			if (RecoilYaw < MaxRecoilYaw)
+			{
+				RecoilYaw += 1.2f;
+			}
+			
+		}
+			MuzzleRotation.Pitch += FMath::RandRange(-RecoilPitch, RecoilPitch);
+			MuzzleRotation.Yaw += FMath::RandRange(-RecoilYaw, RecoilYaw);
 		
+		//shot
 		if (UWorld* World = GetWorld())
 		{
 			FActorSpawnParameters SpawnParams;
@@ -118,9 +148,8 @@ void AWeapon::Fire()
  */
 void AWeapon::ReloadAnimation()
 {
-	//spin the gun on roll axis by 5 degree per frame
-	const FQuat QuatRotation = FQuat(FRotator(0, 0, 5.0f));
-	
+	const FQuat QuatRotation = FQuat(FRotator(0, 0, 20.0f));
+
 	FPSGunMesh->AddRelativeRotation(QuatRotation, false, 0, ETeleportType::None);
 
 	// Check if the gun has rotated 360 degrees on the roll axis
@@ -182,7 +211,7 @@ void AWeapon::SetCanShot(bool bNewCanShot)
 void AWeapon::SetAmmo(int NewAmmo)
 {
 	this->Ammo = NewAmmo;
-	if(Ammo > MaxAmmo)
+	if (Ammo > MaxAmmo)
 	{
 		this->Ammo = MaxAmmo;
 	}
@@ -190,7 +219,7 @@ void AWeapon::SetAmmo(int NewAmmo)
 
 void AWeapon::SetAmmo(int NewAmmo, bool bBypassMax)
 {
-	if(bBypassMax)
+	if (bBypassMax)
 	{
 		this->Ammo = NewAmmo;
 	}
@@ -225,4 +254,3 @@ FString AWeapon::GetAmmoString()
 	FString AmmoString = FString::Printf(TEXT("Ammo: %d/%d"), Ammo, MaxAmmo);
 	return AmmoString;
 }
-

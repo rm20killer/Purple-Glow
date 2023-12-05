@@ -91,3 +91,17 @@ void AFPSProjectile::FireInDirection(const FVector& ShootDirection)
 	ProjectileMovementComponent->Velocity = ShootDirection * ProjectileMovementComponent->InitialSpeed;
 }
 
+void AFPSProjectile::FireInDirection(const FVector& ShootDirection, float Damage)
+{
+	this->BaseDamage = Damage;
+	ProjectileMovementComponent->Velocity = ShootDirection * ProjectileMovementComponent->InitialSpeed;
+}
+
+void AFPSProjectile::FireInDirection(const FVector& ShootDirection, float Damage, float ProjectileSpeed)
+{
+	this->BaseDamage = Damage;
+	ProjectileMovementComponent->InitialSpeed = ProjectileSpeed;
+	ProjectileMovementComponent->MaxSpeed = ProjectileSpeed;
+	ProjectileMovementComponent->Velocity = ShootDirection * ProjectileMovementComponent->InitialSpeed;
+}
+
