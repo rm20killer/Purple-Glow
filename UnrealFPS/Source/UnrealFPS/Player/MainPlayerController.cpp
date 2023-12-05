@@ -27,6 +27,8 @@ void AMainPlayerController::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+	ScoreSystem = NewObject<UScoreSystem>(this, UScoreSystem::StaticClass());
+	ScoreSystem->RegisterComponent();
 }
 
 // Called every frame
@@ -419,3 +421,13 @@ void AMainPlayerController::SetUpGun()
 		UE_LOG(LogTemp, Error, TEXT("No Weapons Found"));
 	}
 }
+
+UScoreSystem* AMainPlayerController::GetScoreSystem()
+{
+	if(!ScoreSystem)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("ScoreSystem is null"));
+	}
+	return ScoreSystem;
+}
+
