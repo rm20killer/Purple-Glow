@@ -7,7 +7,7 @@
 AProcedural_Room::AProcedural_Room()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 	Spacing = 100.0f;
 	MaxXOffset = 10.0f;
 	MaxYOffset = 10.0f;
@@ -27,7 +27,45 @@ AProcedural_Room::AProcedural_Room()
 void AProcedural_Room::BeginPlay()
 {
 	Super::BeginPlay();
+	TArray<AActor*> AttachedActors;
+	GetAttachedActors(AttachedActors);
+	for (auto AttachedActor : AttachedActors)
+	{
+		AttachedActor->Destroy();
+	}
+	if(LeftWall)
+	{
+		LeftWall->Destroy();
+	}
+	if(RightWall)
+	{
+		RightWall->Destroy();
+	}
+	if(FrontWall)
+	{
+		FrontWall->Destroy();
+	}
+	if(BackWall)
+	{
+		BackWall->Destroy();
+	}
+	if(Ceiling)
+	{
+		Ceiling->Destroy();
+	}
+	if(Floor)
+	{
+		Floor->Destroy();
+	}
+	//get child actors and nuke them
+	TArray<AActor*> ChildActors;
+	GetAttachedActors(ChildActors);
+	for (auto ChildActor : ChildActors)
+	{
+		ChildActor->Destroy();
+	}
 	
+	CreateRoom();
 }
 
 // Called every frame
@@ -134,7 +172,7 @@ void AProcedural_Room::CreateRoom()
 		//spawn a wall and set its properties
 		BackWall = GetWorld()->SpawnActor<AProcedural_Wall>(AProcedural_Wall::StaticClass(), GetActorLocation(), GetActorRotation());
 		//BackWall->Rename(TEXT("BackWall"));
-		//attach the wall to the room as a child
+		//make the wall a child of the room
 		BackWall->SetActorRelativeLocation(FVector(RoomLength*(BackWall->Spacing-1), 0.0f, 0.0f));
 		BackWall->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
 		//rotate the wall 90

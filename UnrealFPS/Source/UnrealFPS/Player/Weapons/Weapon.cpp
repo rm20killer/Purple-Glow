@@ -21,11 +21,23 @@ AWeapon::AWeapon()
 	MaxRecoilPitch = 5.0f;
 	MaxRecoilYaw = 5.0f;
 	MuzzleOffset.Set(80.0f, 200.0f, -20.0f);
-	CameraLocation = FVector(0.0f, 0.0f, 0.0f);
+	CameraLocation = FVector(0.0f, 0.0f, 40.0f);
 	CameraRotation = FRotator(0.0f, 0.0f, 0.0f);
 	PawnInstigator = nullptr;
-}
+	ArrowComponent = CreateDefaultSubobject<UArrowComponent>(TEXT("ArrowComponent"));
 
+	//make arrow component show up in the editor
+	ArrowComponent->bHiddenInGame = false;
+}
+void AWeapon::OnConstruction(const FTransform &Transform)
+{
+	//add an arrow component to the gun
+	ArrowComponent->SetupAttachment(RootComponent);
+	
+	ArrowComponent->SetRelativeLocation(FVector(CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset)));
+	// ArrowComponent->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
+	
+}
 // Called when the game starts or when spawned
 void AWeapon::BeginPlay()
 {
@@ -106,6 +118,24 @@ void AWeapon::Fire()
 		shotFired++;
 		const FVector MuzzleLocation = CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset);
 		FRotator MuzzleRotation = CameraRotation;
+		//starttrace is the middle of the screen
+		const FVector StartTrace = CameraLocation;
+		const FVector Direction = CameraRotation.Vector();
+		const FVector EndTrace = StartTrace + (Direction * 10000.0f);
+		FCollisionQueryParams TraceParams(FName(TEXT("WeaponTrace")),false,this);
+		TraceParams.AddIgnoredActor(PawnInstigator);
+		TraceParams.bDebugQuery = true;
+		
+		FHitResult Hit;
+		GetWorld()->LineTraceSingleByChannel(Hit, StartTrace, EndTrace, ECC_Visibility, TraceParams);
+		// DrawDebugLine(GetWorld(), StartTrace, EndTrace, Hit.bBlockingHit ? FColor::Blue : FColor::Red, false, 5.0f, 0, 10.0f);
+		if(Hit.bBlockingHit)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Hit: %s"), *Hit.GetActor()->GetName());
+			MuzzleRotation = (Hit.ImpactPoint - MuzzleLocation).Rotation();
+			UE_LOG(LogTemp, Warning, TEXT("CameraRotation: %s"), *CameraRotation.ToString());
+			UE_LOG(LogTemp, Warning, TEXT("MuzzleRotation: %s"), *MuzzleRotation.ToString());
+		}
 		//add recoil by rotating the gun by a random amount on the pitch axis
 		if(shotFired < ShotBeforeRecoil)
 		{

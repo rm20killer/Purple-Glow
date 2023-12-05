@@ -9,7 +9,7 @@
 AProcedural_Wall::AProcedural_Wall()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 	WallLength = 5;
 	WallHeight = 5;
 	WallWidth = 1;

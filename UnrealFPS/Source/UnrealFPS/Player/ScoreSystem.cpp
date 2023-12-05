@@ -11,7 +11,7 @@ UScoreSystem::UScoreSystem()
 	PrimaryComponentTick.bCanEverTick = true;
 	Score = 0;
 	HighScore = 0;
-	TimeInMilliseconds = 0;
+	// TimeInMilliseconds = 0;
 	TimeInSeconds = 0;
 	bIsTimerActive = true;
 	
@@ -36,30 +36,31 @@ void UScoreSystem::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 	//increment time
 	if(bIsTimerActive)
 	{
-		TimeInMilliseconds += DeltaTime * 10;
+		TimeInSeconds = GetWorld()->GetTimeSeconds();
+		
 	}
-	if (TimeInMilliseconds <= PlatinumTime * 1000)
+	if (TimeInSeconds <= PlatinumTime * 60)
 	{
 		bIsPlatinum = true;
 		bIsGold = false;
 		bIsSilver = false;
 		bIsBronze = false;
 	}
-	else if (TimeInMilliseconds <= GoldTime * 1000)
+	else if (TimeInSeconds <= GoldTime * 60)
 	{
 		bIsPlatinum = false;
 		bIsGold = true;
 		bIsSilver = false;
 		bIsBronze = false;
 	}
-	else if (TimeInMilliseconds <= SilverTime * 1000)
+	else if (TimeInSeconds <= SilverTime * 60)
 	{
 		bIsPlatinum = false;
 		bIsGold = false;
 		bIsSilver = true;
 		bIsBronze = false;
 	}
-	else if (TimeInMilliseconds <= BrozenTime * 1000)
+	else if (TimeInSeconds <= BrozenTime * 60)
 	{
 		bIsPlatinum = false;
 		bIsGold = false;
@@ -117,18 +118,17 @@ int32 UScoreSystem::GetHighScore()
 	return HighScore;
 }
 
-int64 UScoreSystem::GetTimeInMilliseconds()
+int64 UScoreSystem::GetTimeInSecound()
 {
-	return TimeInMilliseconds;
+	return TimeInSeconds;
 }
+
 
 FString UScoreSystem::GetTimerString()
 {
-	
-	int32 Minutes = TimeInMilliseconds / 60;
-	int32 Seconds = TimeInMilliseconds % 60;
-	int32 Milliseconds = TimeInMilliseconds % 1000;
-	FString TimerString = FString::Printf(TEXT("%02d:%02d:%03d"), Minutes, Seconds, Milliseconds);
+	int32 Minutes = FMath::FloorToInt(TimeInSeconds / 60);
+	int32 Seconds = FMath::FloorToInt(TimeInSeconds - (Minutes * 60));
+	FString TimerString = FString::Printf(TEXT("%02d:%02d"), Minutes, Seconds);
 	return TimerString;
 }
 

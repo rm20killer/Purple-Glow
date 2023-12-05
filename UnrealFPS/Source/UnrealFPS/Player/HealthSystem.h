@@ -37,5 +37,6 @@ public:
 	float GetMaxHealth() const { return MaxHealth; }
 	void SetMaxHealth(float val) { MaxHealth = val; }
 
-	void TakeDamage();
+	void TakeDamage(float DamageAmount);
+	
 };

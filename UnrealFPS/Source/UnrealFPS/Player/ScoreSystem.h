@@ -23,8 +23,8 @@ protected:
 private:
 	int32 Score;
 	int32 HighScore;
-	int64 TimeInMilliseconds;
-	int32 TimeInSeconds;
+	// int64 TimeInMilliseconds;
+	float TimeInSeconds;
 	bool bIsTimerActive;
 	bool bIsPlatinum;
 	bool bIsGold;
@@ -51,7 +51,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "ScoreSystem")
 	int32 GetHighScore();
 	UFUNCTION(BlueprintCallable, Category = "ScoreSystem")
-	int64 GetTimeInMilliseconds();
+	int64 GetTimeInSecound();
 	UFUNCTION(BlueprintCallable, Category = "ScoreSystem")
 	FString GetTimerString();
 };

@@ -20,6 +20,18 @@ void UHealthSystem::BeginPlay()
 	Super::BeginPlay();
 }
 
-void UHealthSystem::TakeDamage()
+void UHealthSystem::TakeDamage(float DamageAmount)
 {
+	Health -= DamageAmount;
+	if (Health <= 0)
+	{
+		Health = 0;
+		//TODO: Die
+		//get owner
+		AActor* Owner = GetOwner();
+		if (Owner)
+		{
+			Owner->Destroy();
+		}
+	}
 }

@@ -3,7 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"
+#include "Engine/TriggerVolume.h"
 #include "MovingTarget.generated.h"
 
 UCLASS()
@@ -23,4 +25,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void TargetHit();
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "Collision")
+	UBoxComponent* CollisionComponent;
 };

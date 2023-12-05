@@ -3,6 +3,8 @@
 
 #include "FPSProjectile.h"
 
+#include "UnrealFPS/MovingTarget.h"
+
 // Sets default values
 AFPSProjectile::AFPSProjectile()
 {
@@ -81,6 +83,16 @@ void AFPSProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor
 	if (OtherActor != this && HitComponent->IsSimulatingPhysics())
 	{
 		HitComponent->AddImpulseAtLocation(ProjectileMovementComponent->Velocity * 100.0f, Hit.ImpactPoint);
+		
+	}
+	if(OtherActor != this)
+	{
+		//cast to MovingTarget
+		AMovingTarget* MovingTarget = Cast<AMovingTarget>(OtherActor);
+		if (MovingTarget)
+		{
+			MovingTarget->TargetHit();
+		}
 	}
 
 	Destroy();

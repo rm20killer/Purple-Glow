@@ -4,6 +4,7 @@
 
 #include "FPSProjectile.h"
 #include "CoreMinimal.h"
+#include "Components/ArrowComponent.h"
 #include "GameFramework/Actor.h"
 #include "Weapon.generated.h"
 
@@ -15,6 +16,7 @@ class UNREALFPS_API AWeapon : public AActor
 public:
 	// Sets default values for this actor's properties
 	AWeapon();
+	void OnConstruction(const FTransform& Transform);
 
 protected:
 	// Called when the game starts or when spawned
@@ -24,6 +26,7 @@ private:
 	//UCameraComponent* FPSCameraComponent;
 	int Ammo = 10;
 	bool bCanShot = true;
+	UArrowComponent* ArrowComponent;
 	FTimerHandle ShotHandle;
 	FTimerHandle reloadHandler;
 	FVector CameraLocation;
