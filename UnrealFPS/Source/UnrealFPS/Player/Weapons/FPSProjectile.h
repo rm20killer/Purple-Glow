@@ -46,6 +46,6 @@ public:
 	UMaterialInstanceDynamic* ProjectileMaterialInstance;
 
 	void FireInDirection(const FVector& ShootDirection);
-	void FireInDirection(const FVector& ShootDirection, float Damage);
-	void FireInDirection(const FVector& ShootDirection, float Damage, float ProjectileSpeed);
+	void FireInDirection(const FVector& ShootDirection, const float Damage);
+	void FireInDirection(const FVector& ShootDirection, const float Damage, const float ProjectileSpeed);
 };

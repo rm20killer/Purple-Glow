@@ -78,6 +78,7 @@ void AWeapon::Shot(bool bFireStart, FVector& cameraLocation, FRotator& cameraRot
 
 /**
  * Check if the ammo is empty and if not fire a projectile
+ * add recoil to the gun
  * Fire a projectile in the direction the gun is pointing
  */
 void AWeapon::Fire()
@@ -203,6 +204,9 @@ void AWeapon::UpdateLoc(FVector& cameraLocation, FRotator& cameraRotation)
 	CameraRotation = cameraRotation;
 }
 
+
+
+//SETTERS AND GETTERS are below
 void AWeapon::SetCanShot(bool bNewCanShot)
 {
 	this->bCanShot = bNewCanShot;

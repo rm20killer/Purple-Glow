@@ -6,6 +6,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Weapons/Weapon.h"
 
 // Sets default values
 AMainPlayerController::AMainPlayerController()
@@ -281,6 +282,13 @@ void AMainPlayerController::Reload()
 	}
 }
 
+/**
+ * change the weapon depending on the mouse wheel, reset the selected gun if it is out of bounds
+ * stop firing the old weapon
+ * loop through all the weapons and disable them
+ * enable the selected weapon
+ * @param Value if mouse wheel is scrolled up or down	
+ */
 void AMainPlayerController::ChangeGun(const FInputActionValue& Value)
 {
 	if (Value.Get<float>() > 0.0f)
@@ -319,6 +327,10 @@ void AMainPlayerController::ChangeGun(const FInputActionValue& Value)
 	
 }
 
+/** DEPRECATED use GetAmmo and GetMaxAmmo instead
+ * Only left here just in case it is needed
+ * @return the ammo of the weapon as a string
+ */
 FString AMainPlayerController::GetAmmoString()
 {
 	if (Weapon)
@@ -328,6 +340,10 @@ FString AMainPlayerController::GetAmmoString()
 	return FString("00/00");
 }
 
+/**
+ * check if the weapon is not null if it is not null check the ammo of the weapon if it is less than 10 add a 0 to the front of the string
+ * @return the ammo of the weapon as a string
+ */
 FString AMainPlayerController::GetAmmo()
 {
 	if (Weapon)
@@ -342,6 +358,10 @@ FString AMainPlayerController::GetAmmo()
 	return FString("00");
 }
 
+/**
+ * if the weapon is not null check the max ammo of the weapon if it is less than 10 add a 0 to the front of the string
+ * @return the max ammo of the weapon as a string
+ */
 FString AMainPlayerController::GetMaxAmmo()
 {
 	if (Weapon)
@@ -356,6 +376,9 @@ FString AMainPlayerController::GetMaxAmmo()
 	return FString("00");
 }
 
+/**
+ * @return the percentage of ammo left
+ */
 float AMainPlayerController::GetAmmoPer()
 {
 	if (Weapon)
@@ -368,6 +391,12 @@ float AMainPlayerController::GetAmmoPer()
 	return 0.0f;
 }
 
+
+/**
+ * Do not touch this function, a slight change can break the guns
+ * loop through all the weapons and disable them
+ * enable the first weapon
+ */
 void AMainPlayerController::SetUpGun()
 {
 	for (auto Element : WeaponsArr)
@@ -381,38 +410,12 @@ void AMainPlayerController::SetUpGun()
 	}
 	if(WeaponsArr.Num() > 0)
 	{
-		//enable the first weapon
 		USceneComponent* WeaponComponent = Cast<USceneComponent>(WeaponsArr[0]);
 		WeaponComponent->SetVisibility(true);
-		//cast the weapon to AWeapon
-		//get child actor
 		Weapon = Cast<AWeapon>(WeaponsArr[0]->GetChildActor());
-
-
-		///TODO: remove this
-		// AActor* WeaponActor = Cast<AActor>(WeaponComponent);
-		// AWeapon* WeaponActor = Cast<AWeapon>(WeaponComponent);
-		// Weapon = (AWeapon*)WeaponsArr[0];
-		// if (AActor* WeaponActor = Cast<AActor>(WeaponsArr[0]))
-		// {
-		// }
-		// else
-		// {
-		// 	UE_LOG(LogTemp, Error, TEXT("weapon not casted"));
-		// }
-		
 	}
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("No Weapons Found"));
-	}
-
-	if(Weapon)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Weapon: %s"), *Weapon->GetName());
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("No Weapon Set"));
 	}
 }
