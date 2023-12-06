@@ -3,6 +3,7 @@
 
 #include "FPSProjectile.h"
 
+#include "Weapon.h"
 #include "UnrealFPS/MovingTarget.h"
 
 // Sets default values
@@ -78,8 +79,13 @@ void AFPSProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor
 {
 	//Debug
 	UE_LOG(LogTemp, Warning, TEXT("Projectile hit object: "));
-
-
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *OtherActor->GetName());
+	UE_LOG(LogTemp, Warning, TEXT("Projectile hit component: "));
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *OtherComp->GetName());
+	FName OtherCompCollisionProfileName = OtherComp->GetCollisionProfileName();
+	UE_LOG(LogTemp, Warning, TEXT("Projectile hit component collision profile name: "));
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *OtherCompCollisionProfileName.ToString());
+	
 	if (OtherActor != this && HitComponent->IsSimulatingPhysics())
 	{
 		HitComponent->AddImpulseAtLocation(ProjectileMovementComponent->Velocity * 100.0f, Hit.ImpactPoint);

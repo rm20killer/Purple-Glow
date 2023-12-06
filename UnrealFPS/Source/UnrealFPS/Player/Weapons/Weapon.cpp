@@ -11,6 +11,9 @@ AWeapon::AWeapon()
 	FPSGunMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	FPSGunMesh->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
 	FPSGunMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	FPSGunMesh->SetCollisionProfileName(TEXT("NoCollision"));
+	SetActorEnableCollision(false);
+	FPSGunMesh->BodyInstance.SetCollisionProfileName(TEXT("Weapon"));
 	//set the mesh to the root component
 	RootComponent = FPSGunMesh;
 	FireRate = 0.1f;
@@ -25,6 +28,7 @@ AWeapon::AWeapon()
 	CameraRotation = FRotator(0.0f, 0.0f, 0.0f);
 	PawnInstigator = nullptr;
 	ArrowComponent = CreateDefaultSubobject<UArrowComponent>(TEXT("ArrowComponent"));
+	ArrowComponent->SetupAttachment(FPSGunMesh);
 
 	//make arrow component show up in the editor
 	ArrowComponent->bHiddenInGame = false;
@@ -34,8 +38,12 @@ void AWeapon::OnConstruction(const FTransform &Transform)
 	//add an arrow component to the gun
 	ArrowComponent->SetupAttachment(RootComponent);
 	
-	ArrowComponent->SetRelativeLocation(FVector(CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset)));
+	ArrowComponent->SetWorldLocation(FVector(CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset)));
 	// ArrowComponent->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
+	FPSGunMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	FPSGunMesh->SetCollisionProfileName(TEXT("NoCollision"));
+	SetActorEnableCollision(false);
+	FPSGunMesh->BodyInstance.SetCollisionProfileName(TEXT("Weapon"));
 	
 }
 // Called when the game starts or when spawned
@@ -57,6 +65,8 @@ void AWeapon::Tick(float DeltaTime)
 	{
 		ReloadAnimation();
 	}
+	ArrowComponent->SetWorldLocation(FVector(CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset)));
+	ArrowComponent->SetWorldRotation(CameraRotation);
 }
 
 
@@ -117,6 +127,9 @@ void AWeapon::Fire()
 	{
 		shotFired++;
 		const FVector MuzzleLocation = CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset);
+		UE_LOG(LogTemp, Warning, TEXT("MuzzleLocation: %s"), *MuzzleLocation.ToString());
+		UE_LOG(LogTemp, Warning, TEXT("CameraLocation: %s"), *CameraLocation.ToString());
+		
 		FRotator MuzzleRotation = CameraRotation;
 		//starttrace is the middle of the screen
 		const FVector StartTrace = CameraLocation;
