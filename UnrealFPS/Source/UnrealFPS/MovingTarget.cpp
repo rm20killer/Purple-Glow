@@ -16,6 +16,8 @@ AMovingTarget::AMovingTarget()
 		RootComponent = CollisionComponent;
 	}
 
+	Endpoint = FVector(0.0f, 0.0f, 0.0f);
+	Startingpoint = FVector(0.0f, 100.0f, 0.0f);
 }
 
 // Called when the game starts or when spawned
@@ -29,8 +31,24 @@ void AMovingTarget::BeginPlay()
 void AMovingTarget::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-}
+	FVector Currentloctaion;
+	if (MovingBackToStart)
+	{
+		GetRootComponent()->SetRelativeLocation(Endpoint);
+		if (GetRootComponent()->GetRelativeLocation() == Endpoint)
+		{
+			MovingBackToStart = true;
+		}
+	}
+	else
+		{
+		GetRootComponent()->SetRelativeLocation(Startingpoint);
+		if (GetRootComponent()->GetRelativeLocation() == Startingpoint)
+		{
+			MovingBackToStart = false;
+		}
+		}
+	}
 
 void AMovingTarget::TargetHit()
 {
