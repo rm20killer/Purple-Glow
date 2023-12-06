@@ -27,21 +27,21 @@ AWeapon::AWeapon()
 	CameraLocation = FVector(0.0f, 0.0f, 40.0f);
 	CameraRotation = FRotator(0.0f, 0.0f, 0.0f);
 	PawnInstigator = nullptr;
-	ArrowComponent = CreateDefaultSubobject<UArrowComponent>(TEXT("ArrowComponent"));
-	ArrowComponent->SetupAttachment(FPSGunMesh);
+	// ArrowComponent = CreateDefaultSubobject<UArrowComponent>(TEXT("ArrowComponent"));
+	// ArrowComponent->SetupAttachment(FPSGunMesh);
 
 	//make arrow component show up in the editor
-	ArrowComponent->bHiddenInGame = false;
+	// ArrowComponent->bHiddenInGame = false;
 }
 void AWeapon::OnConstruction(const FTransform &Transform)
 {
 	//add an arrow component to the gun
-	ArrowComponent->SetupAttachment(RootComponent);
+	// ArrowComponent->SetupAttachment(RootComponent);
 	
-	ArrowComponent->SetWorldLocation(FVector(CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset)));
+	// ArrowComponent->SetWorldLocation(FVector(CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset)));
 	// ArrowComponent->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
-	FPSGunMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	FPSGunMesh->SetCollisionProfileName(TEXT("NoCollision"));
+	// FPSGunMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	// FPSGunMesh->SetCollisionProfileName(TEXT("NoCollision"));
 	SetActorEnableCollision(false);
 	FPSGunMesh->BodyInstance.SetCollisionProfileName(TEXT("Weapon"));
 	
@@ -65,8 +65,8 @@ void AWeapon::Tick(float DeltaTime)
 	{
 		ReloadAnimation();
 	}
-	ArrowComponent->SetWorldLocation(FVector(CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset)));
-	ArrowComponent->SetWorldRotation(CameraRotation);
+	// ArrowComponent->SetWorldLocation(FVector(CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset)));
+	// ArrowComponent->SetWorldRotation(CameraRotation);
 }
 
 

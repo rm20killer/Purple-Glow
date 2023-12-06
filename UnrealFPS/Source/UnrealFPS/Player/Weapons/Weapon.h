@@ -26,7 +26,7 @@ private:
 	//UCameraComponent* FPSCameraComponent;
 	int Ammo = 10;
 	bool bCanShot = true;
-	UArrowComponent* ArrowComponent;
+	// UArrowComponent* ArrowComponent;
 	FTimerHandle ShotHandle;
 	FTimerHandle reloadHandler;
 	FVector CameraLocation;
