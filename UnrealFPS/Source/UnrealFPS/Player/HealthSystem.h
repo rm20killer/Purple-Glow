@@ -29,11 +29,13 @@ public:
 	float MaxHealth;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health")
+	 
 	float Health;
 
+	UFUNCTION(BlueprintCallable, Category = "HealthSystem")
 	float GetHealth() const { return Health; }
 	void SetHealth(float val) { Health = val; }
-
+	UFUNCTION(BlueprintCallable, Category = "HealthSystem")
 	float GetMaxHealth() const { return MaxHealth; }
 	void SetMaxHealth(float val) { MaxHealth = val; }
 

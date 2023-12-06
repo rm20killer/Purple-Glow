@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Weapons/Weapon.h"
 #include "ScoreSystem.h"
+#include "HealthSystem.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "InputActionValue.h"
@@ -108,9 +109,11 @@ public:
 	void SetUpGun();
 	
 	UFUNCTION(BlueprintCallable, Category = "ScoreSystem")
-
 	UScoreSystem* GetScoreSystem();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ScoreSystem")
 	UScoreSystem* ScoreSystem;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HealthSystem")
+	UHealthSystem* HealthSystem;
 };

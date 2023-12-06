@@ -29,6 +29,8 @@ void AMainPlayerController::BeginPlay()
 	}
 	ScoreSystem = NewObject<UScoreSystem>(this, UScoreSystem::StaticClass());
 	ScoreSystem->RegisterComponent();
+	HealthSystem = NewObject<UHealthSystem>(this, UHealthSystem::StaticClass());
+	HealthSystem->RegisterComponent();
 }
 
 // Called every frame
