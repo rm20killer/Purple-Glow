@@ -24,9 +24,15 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+	FVector Startingpoint;
+	UPROPERTY(EditDefaultsOnly, Category = "Moving")
+	float MovingTargetSpeed;
+	UPROPERTY(EditDefaultsOnly, Category = "Moving")
+	FVector Endpoint;
 	void TargetHit();
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Collision")
 	UBoxComponent* CollisionComponent;
+	bool MovingBackToStart = false;
+
 };
