@@ -67,6 +67,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "input")
 	UInputAction* SprintAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "input")
+	UInputAction* Interaction;
+private:
 	// - Move functions
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
@@ -75,7 +78,7 @@ public:
 	void Sprinting();
 	void Slide();
 	void StopSliding();
-
+public:
 	//Weapons
 	// - weapons input
 	//fire button
@@ -88,12 +91,15 @@ public:
 	UInputAction* NextWeaponAction;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Weapon")
 	TArray<UChildActorComponent*> WeaponsArr;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Door")
+	TArray<AActor*> DoorArr;
+private:
 	// - weapons functions
 	void Shot();
 	void StopShot();
 	void Reload();
 	void ChangeGun(const FInputActionValue& Value);
-
+public:
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	FString GetAmmoString();
 
@@ -116,4 +122,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HealthSystem")
 	UHealthSystem* HealthSystem;
+
+	UPROPERTY(VisibleAnywhere, Category = "Stats")
+	TArray<int32> Keys;
+	UPROPERTY(VisibleAnywhere, Category = "Stats")
+	int32 TargetsHit = 0;
+	
+	UFUNCTION()
+	void Interact();
 };

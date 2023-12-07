@@ -28,7 +28,8 @@ ATurret::ATurret()
 	MaxSearchRotation = 45.0f;
 
 	//create the turret base mesh
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> TurretBaseMeshAsset(TEXT("/Script/Engine.StaticMesh'/Game/Enemy/Turret_base.Turret_base'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> TurretBaseMeshAsset(
+		TEXT("/Script/Engine.StaticMesh'/Game/Enemy/Turret_base.Turret_base'"));
 	TurretBaseMesh = TurretBaseMeshAsset.Object;
 	//get root relative location
 	TurretBaseMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TurretBaseMesh"));
@@ -38,13 +39,29 @@ ATurret::ATurret()
 	//make root component
 	RootComponent = TurretBaseMeshComponent;
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> TurretGunMeshAsset(TEXT("/Script/Engine.StaticMesh'/Game/Enemy/Turret_Gun.Turret_Gun'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> TurretGunMeshAsset(
+		TEXT("/Script/Engine.StaticMesh'/Game/Enemy/Turret_Gun.Turret_Gun'"));
 	TurretGunMesh = TurretGunMeshAsset.Object;
 	TurretGunMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TurretGunMesh"));
 	TurretGunMeshComponent->SetStaticMesh(TurretGunMesh);
-	TurretGunMeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 180.0f));
+	TurretGunMeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 90.0f));
 	TurretGunMeshComponent->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
 	TurretGunMeshComponent->SetupAttachment(RootComponent);
+	//create cone mesh
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> ConeMeshAsset(TEXT("/Script/Engine.StaticMesh'/Engine/BasicShapes/Cone.Cone'"));
+	ConeMesh = ConeMeshAsset.Object;
+	ConeMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ConeMesh"));
+	ConeMeshComponent->SetStaticMesh(ConeMesh);
+	ConeMeshComponent->SetupAttachment(TurretGunMeshComponent);
+	ConeMeshComponent->SetRelativeLocation(FVector(580.0f, 0.0f, 20.0f));
+	ConeMeshComponent->SetRelativeRotation(FRotator(90.0f, 360.0f, 360.0f));
+	ConeMeshComponent->SetRelativeScale3D(FVector(6.0f, 6.0f, 10.0f));
+	ConeMeshComponent->BodyInstance.SetCollisionProfileName(TEXT("TurretScan"));
+	//overlap event
+	ConeMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	static ConstructorHelpers::FObjectFinder<UMaterial> ConeMaterialAsset(TEXT("/Script/Engine.Material'/Game/Enemy/M_SeeThrough.M_SeeThrough'"));
+	ConeMeshComponent->SetMaterial(0, ConeMaterialAsset.Object);
+	ConeMeshComponent->OnComponentBeginOverlap.AddDynamic(this, &ATurret::OnOverlapBegin);
 	
 }
 
@@ -52,76 +69,126 @@ ATurret::ATurret()
 void ATurret::BeginPlay()
 {
 	Super::BeginPlay();
+	//set the turret's state to searching
+	bSearching = true;
+	bAiming = false;
+	bFiring = false;
+	//start rotating the turret
+	// GetWorldTimerManager().SetTimer(RotationHandler, this, &ATurret::RotateGun, 0.05f, true);
 }
 
 // Called every frame
 void ATurret::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	TurrertLocation = TurretGunMeshComponent->GetComponentLocation()+FVector(0.0f, 10.0f, 30.0f);
-	TurrertRotation = TurretGunMeshComponent->GetComponentRotation();
-	if(bSearching)
+	TurrertLocation = TurretGunMeshComponent->GetComponentLocation() + FVector(0.0f, 10.0f, 15.0f);
+	TurrertRotation = TurretGunMeshComponent->GetRelativeRotation();
+	if (bSearching)
 	{
-		Search();
-		UE_LOG(LogTemp, Warning, TEXT("Searching"))
+		// Search();
+		if (bRotatingLeft)
+		{
+			TurrertRotation.Yaw = FMath::Max(TurrertRotation.Yaw - SearchRotationSpeed, -MaxSearchRotation);
+
+			if (TurrertRotation.Yaw <= -MaxSearchRotation)
+			{
+				bRotatingLeft = false;
+			}
+		}
+		else
+		{
+			TurrertRotation.Yaw = FMath::Min(TurrertRotation.Yaw + SearchRotationSpeed, MaxSearchRotation);
+			
+			if (TurrertRotation.Yaw >= MaxSearchRotation)
+			{
+				bRotatingLeft = true;
+			}
+		}
+		TurretGunMeshComponent->SetRelativeRotation(TurrertRotation);
+		// UE_LOG(LogTemp, Warning, TEXT("Searching"))
 	}
-	else if(bAiming)
+	else if (bAiming)
 	{
 		Aim();
-		UE_LOG(LogTemp, Warning, TEXT("Aiming"))
+		// UE_LOG(LogTemp, Warning, TEXT("Aiming"))
 	}
 }
 
-void ATurret::Search()
+void ATurret::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	FRotator NewRotation = TurrertRotation;
-	//rotate the TurretGunMesh if past max rotation rotate in the opposite direction
-	if (TurrertRotation.Yaw >= MaxSearchRotation)
+	//if the turret is searching
+	if(bSearching)
 	{
-		NewRotation.Yaw -= 2.5f;
-	}
-	else if (TurrertRotation.Yaw <= -MaxSearchRotation)
-	{
-		NewRotation.Yaw += 2.5f;
-	}
-	TurretGunMeshComponent->AddRelativeRotation(NewRotation);
-	TurrertRotation = TurretGunMeshComponent->GetComponentRotation();
-	//create a cone trace for the turret
-	FCollisionQueryParams TraceParams(FName(TEXT("TurretTrace")), true, this);
-	TraceParams.bTraceComplex = true;
-	TraceParams.bReturnPhysicalMaterial = false;
-	TraceParams.AddIgnoredActor(this);
-	FVector StartLocation = TurrertLocation;
-	//foward vector is where the TurrertRotation is pointing
-	FVector ForwardVector = TurrertRotation.Vector();
-	FVector EndLocation = ForwardVector * 10000.0f + StartLocation;
-	
-	//draw the line trace
-	DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 0.3f, 0.0f, 1.0f);
-	FHitResult HitResult;
-	GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility, TraceParams);
-
-	
-	if (HitResult.bBlockingHit)
-	{
-		//get the hit actor
-		HitActor = HitResult.GetActor();
-		//if the hit actor is not null
-		if (HitActor != nullptr)
+		UE_LOG(LogTemp, Warning, TEXT("Turret Detected: %s"), *OtherActor->GetName());
+		//check if the overlapped actor is the player
+		if (Cast<AMainPlayerController>(OtherActor))
 		{
-			//if cast to player is successful
-			if (Cast<AMainPlayerController>(HitActor))
-			{
-				UE_LOG( LogTemp, Warning, TEXT("Hit: %s"), *HitResult.GetActor()->GetName() );
-				//set the turret's rotation to look at the player
-				SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), HitActor->GetActorLocation()));
-				//set the turret's state to aiming
-				bSearching = false;
-				bAiming = true;
-			}
+			//set the turret's state to aiming
+			bSearching = false;
+			bAiming = true;
+			//stop rotating the turret
+			GetWorldTimerManager().ClearTimer(RotationHandler);
+			HitActor = OtherActor;
 		}
 	}
-	
+}
+
+void ATurret::RotateGun()
+{
+	// bool bRotatingLeft = (TurrertRotation.Yaw >= MaxSearchRotation);
+	// if (bRotatingLeft)
+	// {
+	// 	TurrertRotation.Yaw -= SearchRotationSpeed;
+	// }
+	// else
+	// {
+	// 	TurrertRotation.Yaw += SearchRotationSpeed;
+	// }
+	// // TurrertRotation.Yaw += roationSpeed;
+	// TurretGunMeshComponent->SetRelativeRotation(TurrertRotation);
+}
+
+/**
+ * DO NOT USE 
+ */
+void ATurret::Search()
+{
+	return;
+	// //create a cone trace for the turret
+	// // UE_LOG(LogTemp, Warning, TEXT("New TurretRotation: %s"), *TurrertRotation.ToString());
+	// FCollisionQueryParams TraceParams(FName(TEXT("TurretTrace")), true, this);
+	// TraceParams.bTraceComplex = true;
+	// TraceParams.bReturnPhysicalMaterial = false;
+	// TraceParams.AddIgnoredActor(this);
+	// //draw cone trace
+	// FVector StartLocation = TurrertLocation;
+	// FVector Direction = TurrertRotation.Vector();
+	// FVector EndLocation = Direction * 10000.0f + StartLocation;
+	//
+	//
+	// if (HitResult.bBlockingHit)
+	// {
+	// 	//get the hit actor
+	// 	HitActor = HitResult.GetActor();
+	// 	//if the hit actor is not null
+	// 	if (HitActor != nullptr)
+	// 	{
+	// 		//if cast to player is successful
+	// 		if (Cast<AMainPlayerController>(HitActor))
+	// 		{
+	// 			UE_LOG(LogTemp, Warning, TEXT("Hit: %s"), *HitResult.GetActor()->GetName());
+	// 			//set the turret's rotation to look at the player
+	// 			SetActorRotation(
+	// 				UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), HitActor->GetActorLocation()));
+	// 			//set the turret's state to aiming
+	// 			bSearching = false;
+	// 			bAiming = true;
+	// 			//stop rotating the turret
+	// 			GetWorldTimerManager().ClearTimer(RotationHandler);
+	// 		}
+	// 	}
+	// }
 }
 
 void ATurret::Aim()
@@ -133,18 +200,23 @@ void ATurret::Aim()
 		if (Cast<AMainPlayerController>(HitActor))
 		{
 			//slowly move the turret's rotation to look at the player
-			TurrertRotation = FMath::RInterpTo(TurrertRotation, UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), HitActor->GetActorLocation()), GetWorld()->GetDeltaSeconds(), RotationSpeed);
+			TurrertRotation = FMath::RInterpTo(TurrertRotation,
+			                                   UKismetMathLibrary::FindLookAtRotation(
+				                                   GetActorLocation(), HitActor->GetActorLocation()-FVector(0.0f, 0.0f, 50.0f)),
+			                                   GetWorld()->GetDeltaSeconds(), RotationSpeed);
 			TurretGunMeshComponent->SetRelativeRotation(TurrertRotation);
 			//set the turret's state to aiming
 			bSearching = false;
 			bAiming = true;
 
 			//if the turret is aimed at the player
-			if (TurrertRotation.Equals(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), HitActor->GetActorLocation()), 1.0f))
+			if (TurrertRotation.Equals(
+				UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), HitActor->GetActorLocation()), 1.0f))
 			{
 				//set the turret's state to firing
 				bAiming = false;
 				bFiring = true;
+
 				Shot(true);
 			}
 		}
@@ -153,6 +225,9 @@ void ATurret::Aim()
 	{
 		bSearching = true;
 		bAiming = false;
+		bFiring = false;
+		//start rotating the turret
+		// GetWorldTimerManager().SetTimer(RotationHandler, this, &ATurret::RotateGun, 0.05f, true);
 	}
 }
 
@@ -165,7 +240,11 @@ void ATurret::Shot(bool bFire)
 	else
 	{
 		GetWorldTimerManager().ClearTimer(ShotHandle);
+		//reset recoil
 		shotFired = 0;
+		bSearching = true;
+		bAiming = false;
+		bFiring = false;
 	}
 }
 
@@ -237,9 +316,16 @@ void ATurret::Reload()
 
 void ATurret::Reloaded()
 {
+	// GetWorldTimerManager().SetTimer(RotationHandler, this, &ATurret::RotateGun, 0.05f, true);
+	//reset recoil
+	shotFired = 0;
 	Ammo = MaxAmmo;
 	bCanShot = true;
 	bFiring = false;
 	bSearching = true;
 	bAiming = false;
+
+	//put the turret rotation back to the original rotation
+	TurrertRotation = FRotator(0.0f, TurrertRotation.Yaw, 0.0f);
+	TurretGunMeshComponent->SetRelativeRotation(TurrertRotation);
 }

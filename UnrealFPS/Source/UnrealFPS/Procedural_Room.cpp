@@ -27,43 +27,43 @@ AProcedural_Room::AProcedural_Room()
 void AProcedural_Room::BeginPlay()
 {
 	Super::BeginPlay();
-	TArray<AActor*> AttachedActors;
-	GetAttachedActors(AttachedActors);
-	for (auto AttachedActor : AttachedActors)
-	{
-		AttachedActor->Destroy();
-	}
-	if(LeftWall)
-	{
-		LeftWall->Destroy();
-	}
-	if(RightWall)
-	{
-		RightWall->Destroy();
-	}
-	if(FrontWall)
-	{
-		FrontWall->Destroy();
-	}
-	if(BackWall)
-	{
-		BackWall->Destroy();
-	}
-	if(Ceiling)
-	{
-		Ceiling->Destroy();
-	}
-	if(Floor)
-	{
-		Floor->Destroy();
-	}
-	//get child actors and nuke them
-	TArray<AActor*> ChildActors;
-	GetAttachedActors(ChildActors);
-	for (auto ChildActor : ChildActors)
-	{
-		ChildActor->Destroy();
-	}
+	// TArray<AActor*> AttachedActors;
+	// GetAttachedActors(AttachedActors);
+	// for (auto AttachedActor : AttachedActors)
+	// {
+	// 	AttachedActor->Destroy();
+	// }
+	// if(LeftWall)
+	// {
+	// 	LeftWall->Destroy();
+	// }
+	// if(RightWall)
+	// {
+	// 	RightWall->Destroy();
+	// }
+	// if(FrontWall)
+	// {
+	// 	FrontWall->Destroy();
+	// }
+	// if(BackWall)
+	// {
+	// 	BackWall->Destroy();
+	// }
+	// if(Ceiling)
+	// {
+	// 	Ceiling->Destroy();
+	// }
+	// if(Floor)
+	// {
+	// 	Floor->Destroy();
+	// }
+	// //get child actors and nuke them
+	// TArray<AActor*> ChildActors;
+	// GetAttachedActors(ChildActors);
+	// for (auto ChildActor : ChildActors)
+	// {
+	// 	ChildActor->Destroy();
+	// }
 	
 	CreateRoom();
 }
@@ -79,43 +79,43 @@ void AProcedural_Room::OnConstruction(const FTransform &Transform)
 {
 	Super::OnConstruction(Transform);
 	//get attached actors and nuke them
-	TArray<AActor*> AttachedActors;
-	GetAttachedActors(AttachedActors);
-	for (auto AttachedActor : AttachedActors)
-	{
-		AttachedActor->Destroy();
-	}
-	if(LeftWall)
-	{
-		LeftWall->Destroy();
-	}
-	if(RightWall)
-	{
-		RightWall->Destroy();
-	}
-	if(FrontWall)
-	{
-		FrontWall->Destroy();
-	}
-	if(BackWall)
-	{
-		BackWall->Destroy();
-	}
-	if(Ceiling)
-	{
-		Ceiling->Destroy();
-	}
-	if(Floor)
-	{
-		Floor->Destroy();
-	}
-	//get child actors and nuke them
-	TArray<AActor*> ChildActors;
-	GetAttachedActors(ChildActors);
-	for (auto ChildActor : ChildActors)
-	{
-		ChildActor->Destroy();
-	}
+	// TArray<AActor*> AttachedActors;
+	// GetAttachedActors(AttachedActors);
+	// for (auto AttachedActor : AttachedActors)
+	// {
+	// 	AttachedActor->Destroy();
+	// }
+	// if(LeftWall)
+	// {
+	// 	LeftWall->Destroy();
+	// }
+	// if(RightWall)
+	// {
+	// 	RightWall->Destroy();
+	// }
+	// if(FrontWall)
+	// {
+	// 	FrontWall->Destroy();
+	// }
+	// if(BackWall)
+	// {
+	// 	BackWall->Destroy();
+	// }
+	// if(Ceiling)
+	// {
+	// 	Ceiling->Destroy();
+	// }
+	// if(Floor)
+	// {
+	// 	Floor->Destroy();
+	// }
+	// //get child actors and nuke them
+	// TArray<AActor*> ChildActors;
+	// GetAttachedActors(ChildActors);
+	// for (auto ChildActor : ChildActors)
+	// {
+	// 	ChildActor->Destroy();
+	// }
 	
 	CreateRoom();
 }
@@ -124,11 +124,12 @@ void AProcedural_Room::CreateRoom()
 	if(bLeftWall)
 	{
 		//spawn a wall and set its properties
-		LeftWall = GetWorld()->SpawnActor<AProcedural_Wall>(AProcedural_Wall::StaticClass(), GetActorLocation(), GetActorRotation());
-		//LeftWall->Rename(TEXT("LeftWall"));
-		//attach the wall to the room
-		LeftWall->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
-		LeftWall->SetActorRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+		if(LeftWall == nullptr)
+		{
+			LeftWall = GetWorld()->SpawnActor<AProcedural_Wall>(AProcedural_Wall::StaticClass(), GetActorLocation(), GetActorRotation());
+			LeftWall->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
+			LeftWall->SetActorRelativeLocation(FVector(0.0f, 0.0f, 0.0f));	
+		}
 		LeftWall->WallMesh = this->WallMesh;
 		LeftWall->WallMaterial = this->WallMaterial;
 		LeftWall->WallMaterial2 = this->WallMaterial2;
@@ -136,78 +137,119 @@ void AProcedural_Room::CreateRoom()
 		LeftWall->SetWall(RoomLength, RoomHeight, 1);
 		//rename the wall
 	}
+	else
+	{
+		if(LeftWall != nullptr)
+		{
+			LeftWall->Destroy();
+		}
+	}
+	
 	if(bRightWall)
 	{
-		//spawn a wall and set its properties
+		if(RightWall == nullptr)
+		{
+			
 		RightWall = GetWorld()->SpawnActor<AProcedural_Wall>(AProcedural_Wall::StaticClass(), GetActorLocation(), GetActorRotation());
-		//RightWall->Rename(TEXT("RightWall"));
-		//attach the wall to the room
 		RightWall->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
-		//move to wall on y y axis by RoomWidth
 		RightWall->SetActorRelativeLocation(FVector(0.0f, RoomWidth*(RightWall->Spacing-1), 0.0f));
+		}
 		RightWall->WallMesh = this->WallMesh;
 		RightWall->WallMaterial = this->WallMaterial;
 		RightWall->WallMaterial2 = this->WallMaterial2;
 		RightWall->MaxYOffset = this->MaxYOffset;
 		RightWall->SetWall(RoomLength, RoomHeight, 1);
 	}
+	else
+	{
+		if(RightWall != nullptr)
+		{
+			RightWall->Destroy();
+		}
+	}
 	if(bFrontWall)
 	{
-		//spawn a wall and set its properties
-		FrontWall = GetWorld()->SpawnActor<AProcedural_Wall>(AProcedural_Wall::StaticClass(), GetActorLocation(), GetActorRotation());
-		//FrontWall->Rename(TEXT("FrontWall"));
-		//move to wall on y y axis by RoomWidth
-		FrontWall->SetActorRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
-		FrontWall->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
-		//rotate the wall 90
-		FrontWall->SetActorRelativeRotation(FRotator(0.0f, 90.0f, 0.0f));
+		if(FrontWall == nullptr)
+		{
+			FrontWall = GetWorld()->SpawnActor<AProcedural_Wall>(AProcedural_Wall::StaticClass(), GetActorLocation(), GetActorRotation());
+			FrontWall->SetActorRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+			FrontWall->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
+			FrontWall->SetActorRelativeRotation(FRotator(0.0f, 90.0f, 0.0f));	
+		}
 		FrontWall->WallMesh = this->WallMesh;
 		FrontWall->WallMaterial = this->WallMaterial;
 		FrontWall->WallMaterial2 = this->WallMaterial2;
 		FrontWall->MaxYOffset = this->MaxXOffset;
 		FrontWall->SetWall(RoomWidth, RoomHeight, 1);
 	}
+	else
+	{
+		if(FrontWall != nullptr)
+		{
+			FrontWall->Destroy();
+		}
+	}
 	if(bBackWall)
 	{
-		//spawn a wall and set its properties
-		BackWall = GetWorld()->SpawnActor<AProcedural_Wall>(AProcedural_Wall::StaticClass(), GetActorLocation(), GetActorRotation());
-		//BackWall->Rename(TEXT("BackWall"));
-		//make the wall a child of the room
-		BackWall->SetActorRelativeLocation(FVector(RoomLength*(BackWall->Spacing-1), 0.0f, 0.0f));
-		BackWall->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
-		//rotate the wall 90
-		BackWall->SetActorRelativeRotation(FRotator(0.0f, 90.0f, 0.0f));
+		if(BackWall== nullptr)
+		{
+			BackWall = GetWorld()->SpawnActor<AProcedural_Wall>(AProcedural_Wall::StaticClass(), GetActorLocation(), GetActorRotation());
+			BackWall->SetActorRelativeLocation(FVector(RoomLength*(BackWall->Spacing-1), 0.0f, 0.0f));
+			BackWall->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
+			BackWall->SetActorRelativeRotation(FRotator(0.0f, 90.0f, 0.0f));	
+		}
 		BackWall->WallMesh = this->WallMesh;
 		BackWall->WallMaterial = this->WallMaterial;
 		BackWall->WallMaterial2 = this->WallMaterial2;
 		BackWall->MaxYOffset = this->MaxXOffset;
 		BackWall->SetWall(RoomWidth, RoomHeight, 1);
 	}
+	else
+	{
+		if(BackWall != nullptr)
+		{
+			BackWall->Destroy();
+		}
+	}
 	if(bCeiling)
 	{
-		//spawn a wall and set its properties
-		Ceiling = GetWorld()->SpawnActor<AProcedural_Wall>(AProcedural_Wall::StaticClass(), GetActorLocation(), GetActorRotation());
-		//Ceiling->Rename(TEXT("Ceiling"));
-		//attach the wall to the room
-		Ceiling->SetActorRelativeLocation(FVector(0.0f, 0.0f, RoomHeight*Ceiling->Spacing));
-		Ceiling->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
+		if(Ceiling== nullptr)
+		{
+			Ceiling = GetWorld()->SpawnActor<AProcedural_Wall>(AProcedural_Wall::StaticClass(), GetActorLocation(), GetActorRotation());
+			Ceiling->SetActorRelativeLocation(FVector(0.0f, 0.0f, RoomHeight*Ceiling->Spacing));
+			Ceiling->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);	
+		}
 		Ceiling->WallMesh = this->WallMesh;
 		Ceiling->WallMaterial = this->WallMaterial;
 		Ceiling->WallMaterial2 = this->WallMaterial2;
 		Ceiling->MaxZOffset = this->MaxZOffset;
 		Ceiling->SetWall(RoomLength+1, 1, RoomWidth+1);
 	}
+	else
+	{
+		if(Ceiling != nullptr)
+		{
+			Ceiling->Destroy();
+		}
+	}
 	if(bFloor)
 	{
-		//spawn a wall and set its properties
-		Floor = GetWorld()->SpawnActor<AProcedural_Wall>(AProcedural_Wall::StaticClass(), GetActorLocation(), GetActorRotation());
-		//Floor->Rename(TEXT("Floor"));
-		//attach the wall to the room
-		Floor->SetActorRelativeLocation(FVector(0.0f, 0.0f, Floor->Spacing*-1));
-		Floor->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
+		if(Floor== nullptr)
+		{
+			Floor = GetWorld()->SpawnActor<AProcedural_Wall>(AProcedural_Wall::StaticClass(), GetActorLocation(), GetActorRotation());
+			Floor->SetActorRelativeLocation(FVector(0.0f, 0.0f, Floor->Spacing*-1));
+			Floor->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);	
+		}
 		Floor->WallMesh = this->WallMesh;
 		Floor->WallMaterial = this->WallMaterial;
 		Floor->SetWall(RoomLength, 1, RoomWidth);
+	}
+	else
+	{
+		if(Floor != nullptr)
+		{
+			Floor->Destroy();
+		}
 	}
 	
 	

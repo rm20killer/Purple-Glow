@@ -6,6 +6,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "UnrealFPS/Door.h"
 #include "Weapons/Weapon.h"
 
 // Sets default values
@@ -31,6 +32,9 @@ void AMainPlayerController::BeginPlay()
 	ScoreSystem->RegisterComponent();
 	HealthSystem = NewObject<UHealthSystem>(this, UHealthSystem::StaticClass());
 	HealthSystem->RegisterComponent();
+
+	Keys.Add(1);
+	
 }
 
 // Called every frame
@@ -85,6 +89,7 @@ void AMainPlayerController::SetupPlayerInputComponent(UInputComponent* PlayerInp
 		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Started, this, &AMainPlayerController::Reload);
 		EnhancedInputComponent->BindAction(NextWeaponAction, ETriggerEvent::Triggered, this,
 		                                   &AMainPlayerController::ChangeGun);
+		EnhancedInputComponent->BindAction(Interaction, ETriggerEvent::Triggered, this, &AMainPlayerController::Interact);
 	}
 }
 
@@ -431,5 +436,31 @@ UScoreSystem* AMainPlayerController::GetScoreSystem()
 		UE_LOG(LogTemp, Warning, TEXT("ScoreSystem is null"));
 	}
 	return ScoreSystem;
+}
+
+void AMainPlayerController::Interact()
+{
+	//loop through all the doors
+	if(DoorArr.Num() >= 0)
+	{
+		for (auto Element : DoorArr)
+		{
+			//if the door is not null
+			if (Element)
+			{
+				//get the door component
+				UDoor* DoorComponent = Cast<UDoor>(Element->GetComponentByClass(UDoor::StaticClass()));
+				//if the door component is not null
+				if (DoorComponent)
+				{
+					DoorComponent->CheckDoorInteraction();
+				}
+			}
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("No Doors Found"));
+	}
 }
 

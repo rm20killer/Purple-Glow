@@ -27,6 +27,7 @@ private:
 	// UArrowComponent* ArrowComponent;
 	FTimerHandle ShotHandle;
 	FTimerHandle ReloadHandler;
+	FTimerHandle RotationHandler;
 	FVector TurrertLocation;
 	FRotator TurrertRotation;
 	int shotFired = 0;
@@ -36,14 +37,21 @@ private:
 	bool bSearching = true;
 	bool bAiming = false;
 	bool bFiring = false;
+	bool bRotatingLeft = false;
 	AActor* HitActor;
 	UStaticMeshComponent* TurretBaseMeshComponent;
 	UStaticMeshComponent* TurretGunMeshComponent;
+	UStaticMeshComponent* ConeMeshComponent;
+	UStaticMesh* ConeMesh;
 
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	UFUNCTION()
+	virtual void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	void RotateGun();
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	TSubclassOf<class AFPSProjectile> ProjectileClass;
 
@@ -67,7 +75,7 @@ public:
 	// void ReloadAnimation();
 	void Reload();
 	void Reloaded();
-
+	
 	UPROPERTY(EditDefaultsOnly, Category = "WeaponStats")
 	int MaxAmmo;
 	UPROPERTY(EditDefaultsOnly, Category = "WeaponStats")
@@ -88,4 +96,6 @@ public:
 	float MaxSearchRotation;
 	UPROPERTY(EditDefaultsOnly, Category = "Turret")
 	float RotationSpeed = 10.0f;
+	UPROPERTY(EditDefaultsOnly, Category = "Turret")
+	float SearchRotationSpeed = 2.0f;
 };
