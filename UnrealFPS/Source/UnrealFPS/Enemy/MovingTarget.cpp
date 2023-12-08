@@ -72,12 +72,16 @@ void AMovingTarget::TargetHit()
 				//increment score
 				ScoreSystem->AddScore(100);
 			}
-			AMainPlayerController* MainPlayerController = Cast<AMainPlayerController>(PlayerController);
+			AMainPlayerController* MainPlayerController = Cast<AMainPlayerController>(Pawn);
 			if (MainPlayerController)
 			{
 				MainPlayerController->TargetsHit++;
 				UE_LOG(LogTemp, Warning, TEXT("Target hit %d"), MainPlayerController->TargetsHit);
 			}
+			else
+			{
+			    UE_LOG(LogTemp, Warning, TEXT("MainPlayerController is null"));
+            }
 		}
 		Destroy();
 	}
