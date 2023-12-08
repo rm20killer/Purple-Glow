@@ -285,7 +285,7 @@ void ATurret::Aim(float DeltaTime)
 
 void ATurret::Shot(bool bFire)
 {
-	if (bFire)
+	if (bFire)	
 	{
 		GetWorldTimerManager().SetTimer(ShotHandle, this, &ATurret::Fire, FireRate, true);
 	}

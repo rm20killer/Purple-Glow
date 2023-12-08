@@ -7,6 +7,7 @@
 #include "Engine/TriggerVolume.h"
 #include "InputActionValue.h"
 #include "EnhancedInputLibrary.h"
+#include "Components/TextRenderComponent.h"
 #include "Door.generated.h"
 
 UCLASS( ClassGroup = (Custom), meta = (BlueprintSpawnableComponent) )
@@ -29,7 +30,7 @@ public:
 	// Called every frame
 	void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	void GetAllValidActors(float DeltaTime);
-	
+
 	UPROPERTY(EditAnywhere, Category = "Door Interaction")
 	int TargetNeed = 0;
 	UPROPERTY(EditAnywhere, Category = "Door Interaction")
@@ -38,7 +39,15 @@ public:
 	int32 KeyNeeded;
 	UPROPERTY(EditAnywhere, Category = "Door Interaction")
 	bool bUsePlayerButtonPress = false;
-	
+	UPROPERTY(EditAnywhere, Category = "Door Interaction")
+	bool bShowText = false;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Door Interaction/Text")
+	UTextRenderComponent* MyText;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Door Interaction/Text")
+	FString TextString;
+	UPROPERTY(EditAnywhere, Category = "Door Interaction/Text")
+	FVector TextLocation;
 	void OpenDoor(float DeltaTime);
 	void CloseDoor(float DeltaTime);
 	void CheckDoorInteraction();
@@ -58,8 +67,10 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Door")
 	USoundBase* FireSound;
-
+	
 	//inputs
 	FVector Location;
 	FVector StartLocation;
+
+	void BuildText();
 };
