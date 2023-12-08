@@ -48,6 +48,9 @@ public:
 	FString TextString;
 	UPROPERTY(EditAnywhere, Category = "Door Interaction/Text")
 	FVector TextLocation;
+
+	UPROPERTY(EditAnywhere, Category = "Door Interaction/Text")
+	FRotator TextRotation;
 	void OpenDoor(float DeltaTime);
 	void CloseDoor(float DeltaTime);
 	void CheckDoorInteraction();

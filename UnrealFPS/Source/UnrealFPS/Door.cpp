@@ -19,14 +19,14 @@ UDoor::UDoor()
 	MoveSpeed = 20.0f;
 	KeyNeeded = 1;
 	TextLocation = FVector(50.0f, 0.0f, TargetHeight/2);
+	TextRotation = FRotator(0.0f, 0.0f, 0.0f);
 	//Text component
 	MyText = CreateDefaultSubobject<UTextRenderComponent>(TEXT("My text Component"));
 	MyText->SetWorldSize(80.0f);
 	MyText->SetText(FText::FromString("TextString"));
-	//set text to the middle of the door
-	MyText->SetRelativeLocation(TextLocation);
-	
-	
+	MyText->SetHorizontalAlignment(EHTA_Center);
+	MyText->SetVerticalAlignment(EVRTA_TextCenter);
+	// MyText->SetupAttachment(GetOwner()->GetRootComponent());
 }
 
 // Called when the game starts or when spawned
@@ -35,8 +35,10 @@ void UDoor::BeginPlay()
 	Super::BeginPlay();
 	StartLocation = GetOwner()->GetActorLocation();
 	Location = StartLocation;
-	if(bShowText)
+	if(bShowText && MyText != nullptr)
 	{
+		MyText->SetRelativeLocation(TextLocation);
+		MyText->SetRelativeRotation(TextRotation);
 		BuildText();
 	}
 }
@@ -209,7 +211,8 @@ void UDoor::BuildText()
 		FString TargetNeedString = "Targets Hit: " + FString::FromInt(PlayerController->TargetsHit) + "/"+ FString::FromInt(TargetNeed);
 		TextString = TargetNeedString;
 	}
-	
+	MyText->SetRelativeLocation(TextLocation);
+	MyText->SetRelativeRotation(TextRotation);
 	
 	
 }
