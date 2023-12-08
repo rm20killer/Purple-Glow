@@ -56,6 +56,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Door")
 	ATriggerVolume* TriggerVol;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Door")
+	USoundBase* FireSound;
+
 	//inputs
 	FVector Location;
 	FVector StartLocation;

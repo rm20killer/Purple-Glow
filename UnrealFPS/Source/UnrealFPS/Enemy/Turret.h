@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Player/Weapons/FPSProjectile.h"
+#include "../Player/Weapons/FPSProjectile.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Turret.generated.h"
@@ -43,6 +43,7 @@ private:
 	UStaticMeshComponent* TurretGunMeshComponent;
 	UStaticMeshComponent* ConeMeshComponent;
 	UStaticMesh* ConeMesh;
+	FRotator DefaultRotation;
 
 public:
 	// Called every frame
@@ -69,7 +70,7 @@ public:
 	UParticleSystem* MuzzleFlash;
 
 	void Search();
-	void Aim();
+	void Aim(float DeltaTime);
 	void Shot(bool bFire);
 	void Fire();
 	// void ReloadAnimation();

@@ -4,7 +4,7 @@
 #include "FPSProjectile.h"
 
 #include "Weapon.h"
-#include "UnrealFPS/MovingTarget.h"
+#include "UnrealFPS/Enemy/MovingTarget.h"
 
 // Sets default values
 AFPSProjectile::AFPSProjectile()
@@ -75,6 +75,16 @@ void AFPSProjectile::Tick(float DeltaTime)
 
 }
 
+/**
+ * when the projectile hits something add impulse to the object
+ * check if the object is a moving target and call the target hit function
+ * destroy the projectile
+ * @param HitComponent The component that was hit
+ * @param OtherActor the actor that was hit
+ * @param OtherComp 
+ * @param NormalImpulse 
+ * @param Hit if the projectile hit something
+ */
 void AFPSProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	//Debug
@@ -104,17 +114,32 @@ void AFPSProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor
 	Destroy();
 }
 
+/**
+ * Add velocity to the projectile in the given direction
+ * @param ShootDirection the direction the projectile will be fired in
+ */
 void AFPSProjectile::FireInDirection(const FVector& ShootDirection)
 {
 	ProjectileMovementComponent->Velocity = ShootDirection * ProjectileMovementComponent->InitialSpeed;
 }
 
+/**
+ * Add velocity to the projectile in the given direction
+ * @param ShootDirection the direction the projectile will be fired in
+ * @param Damage Change the damage of the projectile to the given value
+ */
 void AFPSProjectile::FireInDirection(const FVector& ShootDirection, const float Damage)
 {
 	this->BaseDamage = Damage;
 	ProjectileMovementComponent->Velocity = ShootDirection * ProjectileMovementComponent->InitialSpeed;
 }
 
+/**
+ * Add velocity to the projectile in the given direction
+ * @param ShootDirection the direction the projectile will be fired in
+ * @param Damage Change the damage of the projectile to the given value
+ * @param ProjectileSpeed change the speed of the projectile to the given value
+ */
 void AFPSProjectile::FireInDirection(const FVector& ShootDirection, const float Damage, const float ProjectileSpeed)
 {
 	this->BaseDamage = Damage;

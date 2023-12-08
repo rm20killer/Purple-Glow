@@ -3,12 +3,12 @@
 
 #include "MovingTarget.h"
 
-#include "Player/ScoreSystem.h"
+#include "../Player/ScoreSystem.h"
 
 // Sets default values
 AMovingTarget::AMovingTarget()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	if (!CollisionComponent)
 	{
@@ -24,31 +24,33 @@ AMovingTarget::AMovingTarget()
 void AMovingTarget::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	Startingpoint = GetRootComponent()->GetComponentLocation();
+	Endpoint = Startingpoint + Endpoint;
 }
 
 // Called every frame
 void AMovingTarget::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	FVector Currentloctaion;
-	if (MovingBackToStart)
+	// Calculate the distance to travel
+	FVector TargetLocation = (MovingBackToStart ? Startingpoint : Endpoint);
+
+	// Interpolate the object's position towards the target
+	float NewX = FMath::FInterpConstantTo(GetRootComponent()->GetRelativeLocation().X, TargetLocation.X, DeltaTime, MovingTargetSpeed);
+	float NewY = FMath::FInterpConstantTo(GetRootComponent()->GetRelativeLocation().Y, TargetLocation.Y, DeltaTime, MovingTargetSpeed);
+	float NewZ = FMath::FInterpConstantTo(GetRootComponent()->GetRelativeLocation().Z, TargetLocation.Z, DeltaTime, MovingTargetSpeed);
+	
+	FVector InterpLocation = FVector(NewX, NewY, NewZ);
+	// Set the object's position to the interpolated location
+	GetRootComponent()->SetRelativeLocation(InterpLocation);
+
+	// Check if the target has been reached
+	if (GetRootComponent()->GetRelativeLocation() == TargetLocation)
 	{
-		GetRootComponent()->SetRelativeLocation(Endpoint);
-		if (GetRootComponent()->GetRelativeLocation() == Endpoint)
-		{
-			MovingBackToStart = true;
-		}
+		// If so, reverse the direction
+		MovingBackToStart = !MovingBackToStart;
 	}
-	else
-		{
-		GetRootComponent()->SetRelativeLocation(Startingpoint);
-		if (GetRootComponent()->GetRelativeLocation() == Startingpoint)
-		{
-			MovingBackToStart = false;
-		}
-		}
-	}
+}
 
 void AMovingTarget::TargetHit()
 {
@@ -73,4 +75,3 @@ void AMovingTarget::TargetHit()
 		Destroy();
 	}
 }
-
