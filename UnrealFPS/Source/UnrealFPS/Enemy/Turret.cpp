@@ -36,6 +36,7 @@ ATurret::ATurret()
 	TurretBaseMeshComponent->SetStaticMesh(TurretBaseMesh);
 	TurretBaseMeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	TurretBaseMeshComponent->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
+	TurretBaseMeshComponent->BodyInstance.SetCollisionProfileName(TEXT("EnemyProjectile"));
 	//make root component
 	RootComponent = TurretBaseMeshComponent;
 
@@ -47,8 +48,10 @@ ATurret::ATurret()
 	TurretGunMeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 90.0f));
 	TurretGunMeshComponent->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
 	TurretGunMeshComponent->SetupAttachment(RootComponent);
+	TurretGunMeshComponent->BodyInstance.SetCollisionProfileName(TEXT("EnemyProjectile"));
 	//create cone mesh
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> ConeMeshAsset(TEXT("/Script/Engine.StaticMesh'/Engine/BasicShapes/Cone.Cone'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> ConeMeshAsset(
+		TEXT("/Script/Engine.StaticMesh'/Engine/BasicShapes/Cone.Cone'"));
 	ConeMesh = ConeMeshAsset.Object;
 	ConeMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ConeMesh"));
 	ConeMeshComponent->SetStaticMesh(ConeMesh);
@@ -59,10 +62,10 @@ ATurret::ATurret()
 	ConeMeshComponent->BodyInstance.SetCollisionProfileName(TEXT("TurretScan"));
 	//overlap event
 	ConeMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	static ConstructorHelpers::FObjectFinder<UMaterial> ConeMaterialAsset(TEXT("/Script/Engine.Material'/Game/Enemy/M_SeeThrough.M_SeeThrough'"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> ConeMaterialAsset(
+		TEXT("/Script/Engine.Material'/Game/Enemy/M_SeeThrough.M_SeeThrough'"));
 	ConeMeshComponent->SetMaterial(0, ConeMaterialAsset.Object);
 	ConeMeshComponent->OnComponentBeginOverlap.AddDynamic(this, &ATurret::OnOverlapBegin);
-	
 }
 
 // Called when the game starts or when spawned
@@ -99,7 +102,7 @@ void ATurret::Tick(float DeltaTime)
 		else
 		{
 			TurrertRotation.Yaw = FMath::Min(TurrertRotation.Yaw + SearchRotationSpeed, MaxSearchRotation);
-			
+
 			if (TurrertRotation.Yaw >= MaxSearchRotation)
 			{
 				bRotatingLeft = true;
@@ -116,10 +119,10 @@ void ATurret::Tick(float DeltaTime)
 }
 
 void ATurret::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                             int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	//if the turret is searching
-	if(bSearching)
+	if (bSearching)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Turret Detected: %s"), *OtherActor->GetName());
 		//check if the overlapped actor is the player
@@ -132,12 +135,14 @@ void ATurret::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherA
 			FCollisionQueryParams TraceParams(FName(TEXT("TurretTrace")), false, this);
 			TraceParams.bReturnPhysicalMaterial = false;
 			FVector StartLocation = TurrertLocation;
-			FVector Direction = UKismetMathLibrary::GetDirectionUnitVector(StartLocation, OtherActor->GetActorLocation());
+			FVector Direction = UKismetMathLibrary::GetDirectionUnitVector(
+				StartLocation, OtherActor->GetActorLocation());
 			FVector EndLocation = Direction * 10000.0f + StartLocation;
 			GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Pawn, TraceParams);
 			//draw ray trace make it blue if it hit something and red if it didn't
-			DrawDebugLine(GetWorld(), StartLocation, EndLocation, HitResult.bBlockingHit ? FColor::Blue : FColor::Red, false, 5.0f, 0, 10.0f);
-			
+			DrawDebugLine(GetWorld(), StartLocation, EndLocation, HitResult.bBlockingHit ? FColor::Blue : FColor::Red,
+			              false, 5.0f, 0, 10.0f);
+
 			//if the ray trace hit the player
 			if (HitResult.bBlockingHit)
 			{
@@ -238,12 +243,14 @@ void ATurret::Aim(float DeltaTime)
 		{
 			FVector BarrelForwardVector = TurretGunMeshComponent->GetForwardVector();
 			// UE_LOG(LogTemp, Warning, TEXT("BarrelForwardVector: %s"), *BarrelForwardVector.ToString());
-			
-			FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation() + BarrelForwardVector,HitActor->GetActorLocation()+ FVector(0.0f, 0.0f, -30.0f));
+
+			FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(
+				GetActorLocation() + BarrelForwardVector, HitActor->GetActorLocation() + FVector(0.0f, 0.0f, -30.0f));
 			// UE_LOG(LogTemp, Warning, TEXT("LookAtRotation: %s"), *LookAtRotation.ToString());
 			// LookAtRotation.Yaw=LookAtRotation.Yaw-DefaultRotation.Yaw;
 			//slowly move the turret's rotation to look at the player
-			TurrertRotation = FMath::RInterpTo(TurretGunMeshComponent->GetComponentRotation(),LookAtRotation,DeltaTime, RotationSpeed);
+			TurrertRotation = FMath::RInterpTo(TurretGunMeshComponent->GetComponentRotation(), LookAtRotation,
+			                                   DeltaTime, RotationSpeed);
 			TurretGunMeshComponent->SetWorldRotation(TurrertRotation);
 			// UE_LOG(LogTemp, Warning, TEXT("TurretRotation: %s"), *TurrertRotation.ToString());
 			//if the turret is aimed at the player
@@ -314,7 +321,7 @@ void ATurret::Fire()
 	if (ProjectileClass)
 	{
 		shotFired++;
-		const FVector MuzzleLocation = TurrertLocation + FTransform(TurrertRotation).TransformVector(MuzzleOffset);
+		const FVector MuzzleLocation = TurrertLocation + FTransform(TurretGunMeshComponent->GetComponentRotation()).TransformVector(MuzzleOffset);
 		FRotator MuzzleRotation = TurrertRotation;
 		if (shotFired < ShotBeforeRecoil)
 		{
@@ -332,19 +339,32 @@ void ATurret::Fire()
 				RecoilYaw += 1.2f;
 			}
 		}
+		UE_LOG(LogTemp, Warning, TEXT("MuzzleLocation: %s"), *MuzzleLocation.ToString());
 		MuzzleRotation.Pitch += FMath::RandRange(-RecoilPitch, RecoilPitch);
 		MuzzleRotation.Yaw += FMath::RandRange(-RecoilYaw, RecoilYaw);
 		if (UWorld* World = GetWorld())
 		{
 			FActorSpawnParameters SpawnParams;
 			SpawnParams.Owner = this;
-			if (AFPSProjectile* Projectile = World->SpawnActor<AFPSProjectile>(
+			if (AEnemyProjectile* Projectile = World->SpawnActor<AEnemyProjectile>(
 				ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams))
 			{
 				FVector LaunchDirection = MuzzleRotation.Vector();
 				Projectile->FireInDirection(LaunchDirection);
 			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Projectile is null"));
+			}
 		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("World is null"));
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("ProjectileClass is null"));
 	}
 }
 

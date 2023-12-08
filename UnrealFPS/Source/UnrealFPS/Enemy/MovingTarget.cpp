@@ -4,6 +4,7 @@
 #include "MovingTarget.h"
 
 #include "../Player/ScoreSystem.h"
+#include "UnrealFPS/Player/MainPlayerController.h"
 
 // Sets default values
 AMovingTarget::AMovingTarget()
@@ -70,6 +71,12 @@ void AMovingTarget::TargetHit()
 			{
 				//increment score
 				ScoreSystem->AddScore(100);
+			}
+			AMainPlayerController* MainPlayerController = Cast<AMainPlayerController>(PlayerController);
+			if (MainPlayerController)
+			{
+				MainPlayerController->TargetsHit++;
+				UE_LOG(LogTemp, Warning, TEXT("Target hit %d"), MainPlayerController->TargetsHit);
 			}
 		}
 		Destroy();

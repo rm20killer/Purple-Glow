@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "../Player/Weapons/FPSProjectile.h"
+#include "EnemyProjectile.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Turret.generated.h"
@@ -53,8 +53,8 @@ public:
 
 	void RotateGun();
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	TSubclassOf<class AFPSProjectile> ProjectileClass;
+	UPROPERTY(EditAnywhere, Category = "Weapon")
+	TSubclassOf<class AEnemyProjectile> ProjectileClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	UStaticMesh* TurretGunMesh;
