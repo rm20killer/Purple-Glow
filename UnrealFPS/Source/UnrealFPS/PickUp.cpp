@@ -52,11 +52,6 @@ void APickUp::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* O
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Actor picked up %s"), *OtherActor->GetName());
-	AMainPlayerController* PlayerController = Cast<AMainPlayerController>(OtherActor);
-	if(PlayerController != nullptr)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Player Overlap"));
-	}
 }
 
 
