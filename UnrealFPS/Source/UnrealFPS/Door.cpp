@@ -18,14 +18,14 @@ UDoor::UDoor()
 	TargetHeight = 200.0f;
 	MoveSpeed = 20.0f;
 	KeyNeeded = 1;
-	TextLocation = FVector(50.0f, 0.0f, TargetHeight/2);
-	TextRotation = FRotator(0.0f, 0.0f, 0.0f);
+	// TextLocation = FVector(50.0f, 0.0f, TargetHeight/2);
+	// TextRotation = FRotator(0.0f, 0.0f, 0.0f);
 	//Text component
-	MyText = CreateDefaultSubobject<UTextRenderComponent>(TEXT("My text Component"));
-	MyText->SetWorldSize(80.0f);
-	MyText->SetText(FText::FromString("TextString"));
-	MyText->SetHorizontalAlignment(EHTA_Center);
-	MyText->SetVerticalAlignment(EVRTA_TextCenter);
+	// MyText = CreateDefaultSubobject<UTextRenderComponent>(TEXT("My text Component"));
+	// MyText->SetWorldSize(80.0f);
+	// MyText->SetText(FText::FromString("TextString"));
+	// MyText->SetHorizontalAlignment(EHTA_Center);
+	// MyText->SetVerticalAlignment(EVRTA_TextCenter);
 	// MyText->SetupAttachment(GetOwner()->GetRootComponent());
 }
 
@@ -35,12 +35,12 @@ void UDoor::BeginPlay()
 	Super::BeginPlay();
 	StartLocation = GetOwner()->GetActorLocation();
 	Location = StartLocation;
-	if(bShowText && MyText != nullptr)
-	{
-		MyText->SetRelativeLocation(TextLocation);
-		MyText->SetRelativeRotation(TextRotation);
-		BuildText();
-	}
+	// if(bShowText && MyText != nullptr)
+	// {
+	// 	MyText->SetRelativeLocation(TextLocation);
+	// 	MyText->SetRelativeRotation(TextRotation);
+	// 	BuildText();
+	// }
 }
 
 
@@ -200,19 +200,20 @@ void UDoor::CheckDoorInteraction()
 
 void UDoor::BuildText()
 {
-	if(KeyNeeded !=1 && TargetNeed ==0)
-	{
-		FString KeyNeededText = "key needed";
-		TextString = KeyNeededText;
-	}
-	else if(KeyNeeded ==1 && TargetNeed !=0)
-	{
-		AMainPlayerController* PlayerController = Cast<AMainPlayerController>(UGameplayStatics::GetPlayerPawn( GetWorld(), 0));
-		FString TargetNeedString = "Targets Hit: " + FString::FromInt(PlayerController->TargetsHit) + "/"+ FString::FromInt(TargetNeed);
-		TextString = TargetNeedString;
-	}
-	MyText->SetRelativeLocation(TextLocation);
-	MyText->SetRelativeRotation(TextRotation);
+	return;
+	// if(KeyNeeded !=1 && TargetNeed ==0)
+	// {
+	// 	FString KeyNeededText = "key needed";
+	// 	TextString = KeyNeededText;
+	// }
+	// else if(KeyNeeded ==1 && TargetNeed !=0)
+	// {
+	// 	AMainPlayerController* PlayerController = Cast<AMainPlayerController>(UGameplayStatics::GetPlayerPawn( GetWorld(), 0));
+	// 	FString TargetNeedString = "Targets Hit: " + FString::FromInt(PlayerController->TargetsHit) + "/"+ FString::FromInt(TargetNeed);
+	// 	TextString = TargetNeedString;
+	// }
+	// MyText->SetRelativeLocation(TextLocation);
+	// MyText->SetRelativeRotation(TextRotation);
 	
 	
 }

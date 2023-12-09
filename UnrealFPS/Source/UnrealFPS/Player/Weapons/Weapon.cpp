@@ -3,6 +3,8 @@
 
 #include "Weapon.h"
 
+#include "Kismet/GameplayStatics.h"
+
 // Sets default values
 AWeapon::AWeapon()
 {
@@ -182,6 +184,11 @@ void AWeapon::Fire()
 			{
 				FVector LaunchDirection = MuzzleRotation.Vector();
 				Projectile->FireInDirection(LaunchDirection);
+				//play sound
+				if (FireSound != nullptr)
+				{
+					UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
+				}
 			}
 		}
 	}

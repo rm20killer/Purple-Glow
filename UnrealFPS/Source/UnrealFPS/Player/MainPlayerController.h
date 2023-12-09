@@ -123,7 +123,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HealthSystem")
 	UHealthSystem* HealthSystem;
 
-	UPROPERTY(VisibleAnywhere, Category = "Stats")
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Stats")
 	TArray<int32> Keys;
 	UPROPERTY(VisibleAnywhere, Category = "Stats")
 	int32 TargetsHit = 0;

@@ -44,6 +44,7 @@ private:
 	UStaticMeshComponent* ConeMeshComponent;
 	UStaticMesh* ConeMesh;
 	FRotator DefaultRotation;
+	float DeltaTimeForTick;
 
 public:
 	// Called every frame

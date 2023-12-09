@@ -9,7 +9,7 @@
 #include "EnhancedInputLibrary.h"
 #include "Components/TextRenderComponent.h"
 #include "Door.generated.h"
-
+//todo: Get text to show up on the door to show the player what they need to do to open the door
 UCLASS( ClassGroup = (Custom), meta = (BlueprintSpawnableComponent) )
 class UNREALFPS_API UDoor : public UActorComponent
 {
@@ -41,16 +41,14 @@ public:
 	bool bUsePlayerButtonPress = false;
 	UPROPERTY(EditAnywhere, Category = "Door Interaction")
 	bool bShowText = false;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Door Interaction/Text")
-	UTextRenderComponent* MyText;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Door Interaction/Text")
-	FString TextString;
-	UPROPERTY(EditAnywhere, Category = "Door Interaction/Text")
-	FVector TextLocation;
-
-	UPROPERTY(EditAnywhere, Category = "Door Interaction/Text")
-	FRotator TextRotation;
+	// UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Door Interaction/Text")
+	// UTextRenderComponent* MyText;
+	// UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Door Interaction/Text")
+	// FString TextString;
+	// UPROPERTY(EditAnywhere, Category = "Door Interaction/Text")
+	// FVector TextLocation;
+	// UPROPERTY(EditAnywhere, Category = "Door Interaction/Text")
+	// FRotator TextRotation;
 	void OpenDoor(float DeltaTime);
 	void CloseDoor(float DeltaTime);
 	void CheckDoorInteraction();

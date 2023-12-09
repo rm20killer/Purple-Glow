@@ -5,6 +5,7 @@
 
 #include "Kismet/KismetMathLibrary.h"
 #include "../Player/MainPlayerController.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ATurret::ATurret()
@@ -85,6 +86,7 @@ void ATurret::BeginPlay()
 void ATurret::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	DeltaTimeForTick = DeltaTime;
 	TurrertLocation = TurretGunMeshComponent->GetComponentLocation() + FVector(0.0f, 10.0f, 15.0f);
 	TurrertRotation = TurretGunMeshComponent->GetRelativeRotation();
 	if (bSearching)
@@ -140,8 +142,7 @@ void ATurret::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherA
 			FVector EndLocation = Direction * 10000.0f + StartLocation;
 			GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Pawn, TraceParams);
 			//draw ray trace make it blue if it hit something and red if it didn't
-			DrawDebugLine(GetWorld(), StartLocation, EndLocation, HitResult.bBlockingHit ? FColor::Blue : FColor::Red,
-			              false, 5.0f, 0, 10.0f);
+			// DrawDebugLine(GetWorld(), StartLocation, EndLocation, HitResult.bBlockingHit ? FColor::Blue : FColor::Red,false, 5.0f, 0, 10.0f);
 
 			//if the ray trace hit the player
 			if (HitResult.bBlockingHit)
@@ -241,8 +242,28 @@ void ATurret::Aim(float DeltaTime)
 		//if cast to player is successful
 		if (Cast<AMainPlayerController>(HitActor))
 		{
+			FHitResult HitResult;
+			FCollisionQueryParams TraceParams(FName(TEXT("TurretTrace")), false, this);
+			TraceParams.bReturnPhysicalMaterial = false;
+			FVector StartLocation = TurrertLocation;
+			FVector Direction = UKismetMathLibrary::GetDirectionUnitVector(
+				StartLocation, HitActor->GetActorLocation());
+			FVector EndLocation = Direction * 10000.0f + StartLocation;
+			GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Pawn, TraceParams);
+			// DrawDebugLine(GetWorld(), StartLocation, EndLocation, HitResult.bBlockingHit ? FColor::Blue : FColor::Red, false, 5.0f, 0, 10.0f);
+			// check if the ray trace hit something and if the hit actor is not the player
+			if (HitResult.bBlockingHit && HitResult.GetActor() != HitActor)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Hit: %s"), *HitResult.GetActor()->GetName());
+				//set the turret's state to searching
+				bSearching = true;
+				bAiming = false;
+				bFiring = false;
+				TurrertRotation = FRotator(0.0f, TurrertRotation.Yaw, 0.0f);
+				TurretGunMeshComponent->SetRelativeRotation(TurrertRotation);
+				return;
+			}
 			FVector BarrelForwardVector = TurretGunMeshComponent->GetForwardVector();
-			// UE_LOG(LogTemp, Warning, TEXT("BarrelForwardVector: %s"), *BarrelForwardVector.ToString());
 
 			FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(
 				GetActorLocation() + BarrelForwardVector, HitActor->GetActorLocation() + FVector(0.0f, 0.0f, -30.0f));
@@ -320,9 +341,15 @@ void ATurret::Fire()
 
 	if (ProjectileClass)
 	{
+		FVector BarrelForwardVector = TurretGunMeshComponent->GetForwardVector();
+		FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation() + BarrelForwardVector, HitActor->GetActorLocation() + FVector(0.0f, 0.0f, -30.0f));
+		TurrertRotation = FMath::RInterpTo(TurretGunMeshComponent->GetComponentRotation(), LookAtRotation,DeltaTimeForTick, RotationSpeed);
+		TurretGunMeshComponent->SetWorldRotation(TurrertRotation);
+
+		
 		shotFired++;
 		const FVector MuzzleLocation = TurrertLocation + FTransform(TurretGunMeshComponent->GetComponentRotation()).TransformVector(MuzzleOffset);
-		FRotator MuzzleRotation = TurrertRotation;
+		FRotator MuzzleRotation = TurretGunMeshComponent->GetComponentRotation();;
 		if (shotFired < ShotBeforeRecoil)
 		{
 			RecoilPitch = 1.0f;
@@ -351,6 +378,11 @@ void ATurret::Fire()
 			{
 				FVector LaunchDirection = MuzzleRotation.Vector();
 				Projectile->FireInDirection(LaunchDirection);
+				//play fire sound
+				if (FireSound != nullptr)
+				{
+					UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
+				}
 			}
 			else
 			{
