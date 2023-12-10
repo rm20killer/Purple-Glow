@@ -41,6 +41,6 @@ public:
 	void SetMaxHealth(float val) { MaxHealth = val; }
 
 	void TakeDamage(float DamageAmount);
-	
+	void AddHealth(float HealAmount);
 	
 };

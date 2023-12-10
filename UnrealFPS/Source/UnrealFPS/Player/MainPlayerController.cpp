@@ -453,8 +453,8 @@ void AMainPlayerController::SetUpGun()
 }
 
 /**
- * return the health system component
- * @return the health system component
+ * return the score system component
+ * @return the score system component
  */
 UScoreSystem* AMainPlayerController::GetScoreSystem()
 {

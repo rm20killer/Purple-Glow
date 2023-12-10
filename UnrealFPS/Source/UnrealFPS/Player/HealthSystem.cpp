@@ -57,3 +57,12 @@ void UHealthSystem::TakeDamage(float DamageAmount)
 		}
 	}
 }
+
+void UHealthSystem::AddHealth(float HealAmount)
+{
+	Health += HealAmount;
+	if (Health > MaxHealth)
+	{
+		Health = MaxHealth;
+	}
+}
