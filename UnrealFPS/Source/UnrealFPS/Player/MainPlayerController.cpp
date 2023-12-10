@@ -36,14 +36,13 @@ void AMainPlayerController::BeginPlay()
 	Keys.Add(1);
 	//get level name
 	FString LevelName = GetWorld()->GetMapName();
-	if(LevelName=="Level1")
+	if (LevelName == "Level1")
 	{
-		
 	}
 	else
 	{
 		UFunction* Function = FindFunction("LoadSave");
-		if(Function)
+		if (Function)
 		{
 			GetOwner()->ProcessEvent(Function, nullptr);
 		}
@@ -102,7 +101,8 @@ void AMainPlayerController::SetupPlayerInputComponent(UInputComponent* PlayerInp
 		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Started, this, &AMainPlayerController::Reload);
 		EnhancedInputComponent->BindAction(NextWeaponAction, ETriggerEvent::Triggered, this,
 		                                   &AMainPlayerController::ChangeGun);
-		EnhancedInputComponent->BindAction(Interaction, ETriggerEvent::Triggered, this, &AMainPlayerController::Interact);
+		EnhancedInputComponent->BindAction(Interaction, ETriggerEvent::Triggered, this,
+		                                   &AMainPlayerController::Interact);
 	}
 }
 
@@ -276,7 +276,7 @@ void AMainPlayerController::Shot()
 {
 	//create a timed loop to fire the weapon
 	//GetWorldTimerManager().SetTimer(ShotHandle, this, &AMainPlayerController::fire, 0.1f, true);
-	
+
 	if (Weapon)
 	{
 		FVector CameraLocation;
@@ -348,7 +348,6 @@ void AMainPlayerController::ChangeGun(const FInputActionValue& Value)
 			WeaponComponent->SetVisibility(true);
 			//cast the weapon to AWeapon
 			Weapon = Cast<AWeapon>(WeaponsArr[i]->GetChildActor());
-			
 		}
 		else
 		{
@@ -356,7 +355,6 @@ void AMainPlayerController::ChangeGun(const FInputActionValue& Value)
 			WeaponComponent->SetVisibility(false);
 		}
 	}
-	
 }
 
 /** DEPRECATED use GetAmmo and GetMaxAmmo instead
@@ -440,7 +438,7 @@ void AMainPlayerController::SetUpGun()
 			WeaponComponent->SetVisibility(false);
 		}
 	}
-	if(WeaponsArr.Num() > 0)
+	if (WeaponsArr.Num() > 0)
 	{
 		USceneComponent* WeaponComponent = Cast<USceneComponent>(WeaponsArr[0]);
 		WeaponComponent->SetVisibility(true);
@@ -458,8 +456,7 @@ void AMainPlayerController::SetUpGun()
  */
 UScoreSystem* AMainPlayerController::GetScoreSystem()
 {
-	
-	if(!ScoreSystem)
+	if (!ScoreSystem)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("ScoreSystem is null"));
 	}
@@ -472,14 +469,13 @@ UScoreSystem* AMainPlayerController::GetScoreSystem()
 void AMainPlayerController::Interact()
 {
 	//loop through all the doors
-	if(DoorArr.Num() >= 0)
+	if (DoorArr.Num() >= 0)
 	{
 		for (auto Element : DoorArr)
 		{
 			//if the door is not null
 			if (Element)
 			{
-				
 				//get the door component from the door
 				UDoor* DoorComponent = Cast<UDoor>(Element->GetComponentByClass(UDoor::StaticClass()));
 				//if the door component is not null
@@ -495,4 +491,3 @@ void AMainPlayerController::Interact()
 		UE_LOG(LogTemp, Error, TEXT("No Doors Found"));
 	}
 }
-

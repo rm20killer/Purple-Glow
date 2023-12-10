@@ -12,13 +12,14 @@ AKey_PickUp::AKey_PickUp()
 }
 
 void AKey_PickUp::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-                                 UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                                 UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+                                 const FHitResult& SweepResult)
 {
 	Super::OnOverlapBegin(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
 	AMainPlayerController* PlayerController = Cast<AMainPlayerController>(OtherActor);
-	if(PlayerController != nullptr)
+	if (PlayerController != nullptr)
 	{
-		if(KeyID == 0)
+		if (KeyID == 0)
 		{
 			UE_LOG(LogTemp, Error, TEXT("KeyID is 0, CHANGE IT!!!"));
 			return;

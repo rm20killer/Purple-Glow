@@ -11,16 +11,17 @@ UCLASS()
 class UNREALFPS_API AInGameText : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AInGameText();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:
-	virtual void OnConstruction(const FTransform &Transform) override;
+	virtual void OnConstruction(const FTransform& Transform) override;
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -29,5 +30,4 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Objects/Text")
 	FString TextString;
-
 };

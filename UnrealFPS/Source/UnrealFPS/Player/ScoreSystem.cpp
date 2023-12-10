@@ -3,8 +3,6 @@
 
 #include "ScoreSystem.h"
 
-#include "GameFramework/SaveGame.h"
-#include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
 UScoreSystem::UScoreSystem()
@@ -18,7 +16,7 @@ UScoreSystem::UScoreSystem()
 	TimeInSeconds = 0;
 	TotalTimeInSeconds = 0;
 	bIsTimerActive = true;
-	
+
 	// ...
 }
 
@@ -29,7 +27,6 @@ void UScoreSystem::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
 }
 
 
@@ -44,33 +41,32 @@ void UScoreSystem::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	//increment time
-	if(bIsTimerActive)
+	if (bIsTimerActive)
 	{
 		TimeInSeconds = GetWorld()->GetTimeSeconds();
-		
 	}
-	if (TimeInSeconds+TotalTimeInSeconds <= PlatinumTime * 60)
+	if (TimeInSeconds + TotalTimeInSeconds <= PlatinumTime * 60)
 	{
 		bIsPlatinum = true;
 		bIsGold = false;
 		bIsSilver = false;
 		bIsBronze = false;
 	}
-	else if (TimeInSeconds+TotalTimeInSeconds <= GoldTime * 60)
+	else if (TimeInSeconds + TotalTimeInSeconds <= GoldTime * 60)
 	{
 		bIsPlatinum = false;
 		bIsGold = true;
 		bIsSilver = false;
 		bIsBronze = false;
 	}
-	else if (TimeInSeconds+TotalTimeInSeconds <= SilverTime * 60)
+	else if (TimeInSeconds + TotalTimeInSeconds <= SilverTime * 60)
 	{
 		bIsPlatinum = false;
 		bIsGold = false;
 		bIsSilver = true;
 		bIsBronze = false;
 	}
-	else if (TimeInSeconds+TotalTimeInSeconds <= BrozenTime * 60)
+	else if (TimeInSeconds + TotalTimeInSeconds <= BrozenTime * 60)
 	{
 		bIsPlatinum = false;
 		bIsGold = false;
@@ -84,7 +80,7 @@ void UScoreSystem::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 		bIsSilver = false;
 		bIsBronze = false;
 	}
-	
+
 	// ...
 }
 
@@ -94,19 +90,19 @@ void UScoreSystem::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
  */
 void UScoreSystem::AddScore(int32 ScoreToAdd)
 {
-	if(bIsPlatinum)
+	if (bIsPlatinum)
 	{
 		ScoreToAdd *= 3.5;
 	}
-	else if(bIsGold)
+	else if (bIsGold)
 	{
 		ScoreToAdd *= 3;
 	}
-	else if(bIsSilver)
+	else if (bIsSilver)
 	{
 		ScoreToAdd *= 2;
 	}
-	else if(bIsBronze)
+	else if (bIsBronze)
 	{
 		ScoreToAdd *= 1.5;
 	}
@@ -119,13 +115,13 @@ void UScoreSystem::AddScore(int32 ScoreToAdd)
 void UScoreSystem::SaveScore()
 {
 	//check if score is higher than highscore
-	if(Score > HighScore)
+	if (Score > HighScore)
 	{
 		HighScore = Score;
 	}
 	//save score
 	UFunction* Function = GetOwner()->FindFunction(TEXT("Save"));
-	if(Function)
+	if (Function)
 	{
 		GetOwner()->ProcessEvent(Function, nullptr);
 	}
@@ -153,9 +149,9 @@ int32 UScoreSystem::GetHighScore()
  * 
  * @return current time in seconds
  */
-int64 UScoreSystem::GetTimeInSecound()
+int64 UScoreSystem::GetTotalTimeInSeconds()
 {
-	return TimeInSeconds+TotalTimeInSeconds;
+	return TimeInSeconds + TotalTimeInSeconds;
 }
 
 
@@ -165,10 +161,9 @@ int64 UScoreSystem::GetTimeInSecound()
  */
 FString UScoreSystem::GetTimerString()
 {
-	float total = TimeInSeconds+TotalTimeInSeconds;
+	float total = TimeInSeconds + TotalTimeInSeconds;
 	int32 Minutes = FMath::FloorToInt(total / 60);
 	int32 Seconds = FMath::FloorToInt(total - (Minutes * 60));
 	FString TimerString = FString::Printf(TEXT("%02d:%02d"), Minutes, Seconds);
 	return TimerString;
 }
-

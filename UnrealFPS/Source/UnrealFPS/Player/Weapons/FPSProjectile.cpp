@@ -9,7 +9,7 @@
 // Sets default values
 AFPSProjectile::AFPSProjectile()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	InitialLifeSpan = 3.0f;
 
@@ -35,7 +35,8 @@ AFPSProjectile::AFPSProjectile()
 	if (!ProjectileMovementComponent)
 	{
 		// Use this component to drive this projectile's movement.
-		ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
+		ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(
+			TEXT("ProjectileMovementComponent"));
 		ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
 		ProjectileMovementComponent->InitialSpeed = 5000.0f;
 		ProjectileMovementComponent->MaxSpeed = 5000.0f;
@@ -65,14 +66,12 @@ AFPSProjectile::AFPSProjectile()
 void AFPSProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
 void AFPSProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 /**
@@ -85,7 +84,8 @@ void AFPSProjectile::Tick(float DeltaTime)
  * @param NormalImpulse 
  * @param Hit if the projectile hit something
  */
-void AFPSProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void AFPSProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+                           FVector NormalImpulse, const FHitResult& Hit)
 {
 	//Debug
 	// UE_LOG(LogTemp, Warning, TEXT("Projectile hit object: "));
@@ -95,13 +95,12 @@ void AFPSProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor
 	// FName OtherCompCollisionProfileName = OtherComp->GetCollisionProfileName();
 	// UE_LOG(LogTemp, Warning, TEXT("Projectile hit component collision profile name: "));
 	// UE_LOG(LogTemp, Warning, TEXT("%s"), *OtherCompCollisionProfileName.ToString());
-	
+
 	if (OtherActor != this && HitComponent->IsSimulatingPhysics())
 	{
 		HitComponent->AddImpulseAtLocation(ProjectileMovementComponent->Velocity * 100.0f, Hit.ImpactPoint);
-		
 	}
-	if(OtherActor != this)
+	if (OtherActor != this)
 	{
 		//cast to MovingTarget
 		AMovingTarget* MovingTarget = Cast<AMovingTarget>(OtherActor);
@@ -147,4 +146,3 @@ void AFPSProjectile::FireInDirection(const FVector& ShootDirection, const float 
 	ProjectileMovementComponent->MaxSpeed = ProjectileSpeed;
 	ProjectileMovementComponent->Velocity = ShootDirection * ProjectileMovementComponent->InitialSpeed;
 }
-

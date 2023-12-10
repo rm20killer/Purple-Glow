@@ -69,6 +69,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "input")
 	UInputAction* Interaction;
+
 private:
 	// - Move functions
 	void Move(const FInputActionValue& Value);
@@ -78,6 +79,7 @@ private:
 	void Sprinting();
 	void Slide();
 	void StopSliding();
+
 public:
 	//Weapons
 	// - weapons input
@@ -89,24 +91,26 @@ public:
 	UInputAction* ReloadAction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "input")
 	UInputAction* NextWeaponAction;
-	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Weapon")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	TArray<UChildActorComponent*> WeaponsArr;
 
 	//other
-	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Door")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door")
 	TArray<AActor*> DoorArr;
 	void Death();
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HealthSystem")
 	TSubclassOf<UUserWidget> GameOverWidgetClass;
-    
+
 	UPROPERTY()
 	UUserWidget* GameOverWidget;
+
 private:
 	// - weapons functions
 	void Shot();
 	void StopShot();
 	void Reload();
 	void ChangeGun(const FInputActionValue& Value);
+
 public:
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	FString GetAmmoString();
@@ -121,7 +125,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void SetUpGun();
-	
+
 	UFUNCTION(BlueprintCallable, Category = "ScoreSystem")
 	UScoreSystem* GetScoreSystem();
 
@@ -131,7 +135,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HealthSystem")
 	UHealthSystem* HealthSystem;
 
-	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Stats")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 	TArray<int32> Keys;
 	UPROPERTY(VisibleAnywhere, Category = "Stats")
 	int32 TargetsHit = 0;
@@ -139,10 +143,10 @@ public:
 	// UFUNCTION(BlueprintCallable, Category = "Stats")
 	// int32 GetScore();
 	// UFUNCTION(BlueprintCallable, Category = "Stats")
-    // int32 GetHighScore();
+	// int32 GetHighScore();
 	// UFUNCTION(BlueprintCallable, Category = "Stats")
 	// float TotalTimeInSeconds();
-	
+
 	UFUNCTION()
 	void Interact();
 };

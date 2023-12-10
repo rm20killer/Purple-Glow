@@ -217,7 +217,6 @@ void ATurret::RotateGun()
  */
 void ATurret::Search()
 {
-	return;
 	// //create a cone trace for the turret
 	// // UE_LOG(LogTemp, Warning, TEXT("New TurretRotation: %s"), *TurrertRotation.ToString());
 	// FCollisionQueryParams TraceParams(FName(TEXT("TurretTrace")), true, this);
@@ -338,7 +337,7 @@ void ATurret::Aim(float DeltaTime)
  */
 void ATurret::Shot(bool bFire)
 {
-	if (bFire)	
+	if (bFire)
 	{
 		GetWorldTimerManager().SetTimer(ShotHandle, this, &ATurret::Fire, FireRate, true);
 	}
@@ -376,14 +375,17 @@ void ATurret::Fire()
 	{
 		//shot the projectile in the direction the turret is pointing
 		FVector BarrelForwardVector = TurretGunMeshComponent->GetForwardVector();
-		FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation() + BarrelForwardVector, HitActor->GetActorLocation() + FVector(0.0f, 0.0f, -30.0f));
-		TurrertRotation = FMath::RInterpTo(TurretGunMeshComponent->GetComponentRotation(), LookAtRotation,DeltaTimeForTick, RotationSpeed);
+		FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(
+			GetActorLocation() + BarrelForwardVector, HitActor->GetActorLocation() + FVector(0.0f, 0.0f, -30.0f));
+		TurrertRotation = FMath::RInterpTo(TurretGunMeshComponent->GetComponentRotation(), LookAtRotation,
+		                                   DeltaTimeForTick, RotationSpeed);
 		TurretGunMeshComponent->SetWorldRotation(TurrertRotation);
 
 		//add recoil to the gun
 		shotFired++;
-		const FVector MuzzleLocation = TurrertLocation + FTransform(TurretGunMeshComponent->GetComponentRotation()).TransformVector(MuzzleOffset);
-		FRotator MuzzleRotation = TurretGunMeshComponent->GetComponentRotation();;
+		const FVector MuzzleLocation = TurrertLocation + FTransform(TurretGunMeshComponent->GetComponentRotation()).
+			TransformVector(MuzzleOffset);
+		FRotator MuzzleRotation = TurretGunMeshComponent->GetComponentRotation();
 		if (shotFired < ShotBeforeRecoil)
 		{
 			RecoilPitch = 1.0f;
@@ -434,6 +436,7 @@ void ATurret::Fire()
 		UE_LOG(LogTemp, Warning, TEXT("ProjectileClass is null"));
 	}
 }
+
 /**
  * check if the ammo is full and if not start reloading and wait 0.5 seconds
  */

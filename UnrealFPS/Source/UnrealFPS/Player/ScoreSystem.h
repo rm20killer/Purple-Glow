@@ -7,12 +7,12 @@
 #include "ScoreSystem.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class UNREALFPS_API UScoreSystem : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
+public:
 	// Sets default values for this component's properties
 	UScoreSystem();
 
@@ -31,10 +31,11 @@ private:
 	bool bIsGold;
 	bool bIsSilver;
 	bool bIsBronze;
-	
-public:	
+
+public:
 	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
+	                           FActorComponentTickFunction* ThisTickFunction) override;
 
 	UPROPERTY(EditDefaultsOnly, Category = "ScoreSystem")
 	float BrozenTime = 10.0f;
@@ -44,7 +45,7 @@ public:
 	float GoldTime = 3.5f;
 	UPROPERTY(EditDefaultsOnly, Category = "ScoreSystem")
 	float PlatinumTime = 2.0f;
-	
+
 	void AddScore(int32 ScoreToAdd);
 	void SaveScore();
 	// void LoadScore();
@@ -53,15 +54,16 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "ScoreSystem")
 	int32 GetHighScore();
 	UFUNCTION(BlueprintCallable, Category = "ScoreSystem")
-	int64 GetTimeInSecound();
+	int64 GetTotalTimeInSeconds();
 	UFUNCTION(BlueprintCallable, Category = "ScoreSystem")
 	FString GetTimerString();
 
 	UFUNCTION(BlueprintCallable, Category = "ScoreSystem")
 	void SetSore(int32 val) { Score = val; }
+
 	UFUNCTION(BlueprintCallable, Category = "ScoreSystem")
 	void SetHighScore(int32 val) { HighScore = val; }
+
 	UFUNCTION(BlueprintCallable, Category = "ScoreSystem")
-	void SetTimeInSecound(float val) { TotalTimeInSeconds = val; }
-	
+	void SetTotalTimeInSeconds(float val) { TotalTimeInSeconds = val; }
 };

@@ -10,12 +10,12 @@
 #include "Components/TextRenderComponent.h"
 #include "Door.generated.h"
 //todo: Get text to show up on the door to show the player what they need to do to open the door
-UCLASS( ClassGroup = (Custom), meta = (BlueprintSpawnableComponent) )
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class UNREALFPS_API UDoor : public UActorComponent
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	UDoor();
 
@@ -26,9 +26,10 @@ protected:
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "input")
 	UInputMappingContext* DefaultMappingContext;
-	
+
 	// Called every frame
-	void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType,
+	                           FActorComponentTickFunction* ThisTickFunction) override;
 	void GetAllValidActors(float DeltaTime);
 
 	UPROPERTY(EditAnywhere, Category = "Door Interaction")
@@ -56,7 +57,7 @@ public:
 private:
 	UPROPERTY(EditAnywhere, Category = "Door Interaction")
 	bool bForceOpen = false;
-	bool DoorCanBeInteracted=false;
+	bool DoorCanBeInteracted = false;
 	UPROPERTY(EditAnywhere, Category = "Door")
 	float TargetHeight = 20.0f;
 
@@ -68,7 +69,7 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Door")
 	USoundBase* FireSound;
-	
+
 	//inputs
 	FVector Location;
 	FVector StartLocation;

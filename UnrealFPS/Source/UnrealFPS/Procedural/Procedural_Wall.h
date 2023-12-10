@@ -10,21 +10,23 @@ UCLASS()
 class UNREALFPS_API AProcedural_Wall : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AProcedural_Wall();
-	void OnConstruction(const FTransform &Transform) override;
+	virtual void OnConstruction(const FTransform& Transform) override;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
 public:
 	UInstancedStaticMeshComponent* WallMeshComponent;
 	UInstancedStaticMeshComponent* WallMeshComponent2;
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Wall")
-    int32 WallLength;
+	int32 WallLength;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Wall")
 	int32 WallHeight;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Wall")
@@ -43,7 +45,7 @@ public:
 	UMaterial* WallMaterial;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WallLook")
 	UMaterial* WallMaterial2;
-	
+
 	UFUNCTION(BlueprintCallable, Category = "Wall")
 	void CreateWall();
 

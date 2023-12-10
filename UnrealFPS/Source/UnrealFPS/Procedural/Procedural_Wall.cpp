@@ -8,7 +8,7 @@
 // Sets default values
 AProcedural_Wall::AProcedural_Wall()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 	WallLength = 5;
 	WallHeight = 5;
@@ -17,21 +17,22 @@ AProcedural_Wall::AProcedural_Wall()
 	MaxXOffset = 0.0f;
 	MaxYOffset = 0.0f;
 	MaxZOffset = 0.0f;
-	
+
 	//set default mesh
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> MyMesh(TEXT("/Script/Engine.StaticMesh'/Engine/BasicShapes/Cube.Cube'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> MyMesh(
+		TEXT("/Script/Engine.StaticMesh'/Engine/BasicShapes/Cube.Cube'"));
 	WallMesh = MyMesh.Object;
 	WallMeshComponent = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("WallMesh"));
 	WallMeshComponent2 = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("WallMesh2"));
 	//make sure wallmeshCOmpoent is 0,0,0
 	WallMeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	//set the first material of the mesh
-	if(WallMaterial)
+	if (WallMaterial)
 	{
 		WallMeshComponent->SetMaterial(0, WallMaterial);
 	}
 	//set the material of the second mesh
-	if(WallMaterial2)
+	if (WallMaterial2)
 	{
 		WallMeshComponent2->SetMaterial(0, WallMaterial2);
 	}
@@ -46,7 +47,7 @@ AProcedural_Wall::AProcedural_Wall()
  * On a change in the editor, rebuild the wall
  * @param Transform 
  */
-void AProcedural_Wall::OnConstruction(const FTransform &Transform)
+void AProcedural_Wall::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
 	//destroy all instances
@@ -54,6 +55,7 @@ void AProcedural_Wall::OnConstruction(const FTransform &Transform)
 	WallMeshComponent2->ClearInstances();
 	CreateWall();
 }
+
 // Called when the game starts or when spawned
 void AProcedural_Wall::BeginPlay()
 {
@@ -64,7 +66,6 @@ void AProcedural_Wall::BeginPlay()
 void AProcedural_Wall::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 /**
@@ -80,11 +81,11 @@ void AProcedural_Wall::CreateWall()
 	//make WallMeshComponent2 a child of WallMeshComponent so that it moves with it
 	WallMeshComponent2->AttachToComponent(WallMeshComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	// WallMeshComponent2->SetupAttachment(WallMeshComponent);
-	if(WallMaterial)
+	if (WallMaterial)
 	{
 		WallMeshComponent->SetMaterial(0, WallMaterial);
 	}
-	if(WallMaterial2)
+	if (WallMaterial2)
 	{
 		WallMeshComponent2->SetMaterial(0, WallMaterial2);
 	}
@@ -107,7 +108,7 @@ void AProcedural_Wall::CreateWall()
 				float y = k * Spacing + YOffset;
 				float z = j * Spacing + ZOffset;
 				FVector Location = FVector(x, y, z);
-				if(FMath::RandRange(0, 100) < 10)
+				if (FMath::RandRange(0, 100) < 10)
 				{
 					WallMeshComponent2->AddInstance(FTransform(Location));
 				}
@@ -118,7 +119,6 @@ void AProcedural_Wall::CreateWall()
 			}
 		}
 	}
-
 }
 
 /**
@@ -146,4 +146,3 @@ void AProcedural_Wall::ResetWall()
 	WallMeshComponent2->ClearInstances();
 	CreateWall();
 }
-

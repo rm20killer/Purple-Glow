@@ -8,7 +8,7 @@
 // Sets default values
 APickUp::APickUp()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	if (!RootComponent)
@@ -17,17 +17,16 @@ APickUp::APickUp()
 	}
 	PickupRange = 100.0f;
 	RotationSpeed = 50.0f;
-	if(!CollisionComponent)
+	if (!CollisionComponent)
 	{
 		CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
 		CollisionComponent->BodyInstance.SetCollisionProfileName(TEXT("PickUp"));
 		CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &APickUp::OnOverlapBegin);
 		CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-		CollisionComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
+		CollisionComponent->SetCollisionResponseToAllChannels(ECR_Overlap);
 		CollisionComponent->InitSphereRadius(PickupRange);
 		RootComponent = CollisionComponent;
 	}
-
 }
 
 // Called when the game starts or when spawned
@@ -38,7 +37,6 @@ void APickUp::BeginPlay()
 {
 	Super::BeginPlay();
 	CollisionComponent->InitSphereRadius(PickupRange);
-	
 }
 
 // Called every frame
@@ -64,10 +62,9 @@ void APickUp::Tick(float DeltaTime)
  * @param bFromSweep 
  * @param SweepResult 
  */
-void APickUp::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void APickUp::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+                             UPrimitiveComponent* OtherComp,
+                             int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Actor picked up %s"), *OtherActor->GetName());
 }
-
-

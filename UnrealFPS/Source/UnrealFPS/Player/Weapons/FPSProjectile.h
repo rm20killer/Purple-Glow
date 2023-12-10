@@ -12,8 +12,8 @@ UCLASS()
 class UNREALFPS_API AFPSProjectile : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AFPSProjectile();
 
@@ -21,12 +21,13 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION()
-	virtual void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	virtual void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	                   FVector NormalImpulse, const FHitResult& Hit);
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Projectile")
 	USphereComponent* ProjectileMeshComponent;

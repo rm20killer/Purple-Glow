@@ -25,22 +25,22 @@ protected:
 	float HealthTweenDirection;
 
 public:
-	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	float MaxHealth;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health")
-	 
+
 	float Health;
 
 	UFUNCTION(BlueprintCallable, Category = "HealthSystem")
 	float GetHealth() const { return Health; }
+
 	void SetHealth(float val) { Health = val; }
 	UFUNCTION(BlueprintCallable, Category = "HealthSystem")
 	float GetMaxHealth() const { return MaxHealth; }
+
 	void SetMaxHealth(float val) { MaxHealth = val; }
 
 	void TakeDamage(float DamageAmount);
 	void AddHealth(float HealAmount);
-	
 };

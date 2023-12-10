@@ -11,22 +11,25 @@ UCLASS()
 class UNREALFPS_API AProcedural_Room : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AProcedural_Room();
-	void OnConstruction(const FTransform &Transform) override;
+	virtual void OnConstruction(const FTransform& Transform) override;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
 private:
 	AProcedural_Wall* LeftWall;
-    AProcedural_Wall* RightWall;
-    AProcedural_Wall* FrontWall;
-    AProcedural_Wall* BackWall;
-    AProcedural_Wall* Ceiling;
-    AProcedural_Wall* Floor;
-public:	
+	AProcedural_Wall* RightWall;
+	AProcedural_Wall* FrontWall;
+	AProcedural_Wall* BackWall;
+	AProcedural_Wall* Ceiling;
+	AProcedural_Wall* Floor;
+
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Room")
@@ -47,7 +50,7 @@ public:
 	bool bBackWall;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Room")
 	bool bFloor;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WallLook")
 	UStaticMesh* WallMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WallLook")
@@ -67,5 +70,4 @@ public:
 	float MaxZOffset;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Wall")
 	float Spacing;
-	
 };

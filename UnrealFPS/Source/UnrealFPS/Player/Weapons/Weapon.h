@@ -16,7 +16,7 @@ class UNREALFPS_API AWeapon : public AActor
 public:
 	// Sets default values for this actor's properties
 	AWeapon();
-	void OnConstruction(const FTransform& Transform);
+	virtual void OnConstruction(const FTransform& Transform) override;
 
 protected:
 	// Called when the game starts or when spawned
@@ -71,7 +71,7 @@ public:
 	float FireRate;
 	UPROPERTY(EditDefaultsOnly, Category = "WeaponStats")
 	bool bTapFire;
-	UPROPERTY( EditDefaultsOnly, Category = "WeaponStats")
+	UPROPERTY(EditDefaultsOnly, Category = "WeaponStats")
 	float BaseDamage;
 	UPROPERTY(EditDefaultsOnly, Category = "WeaponStats")
 	float ReloadTime;

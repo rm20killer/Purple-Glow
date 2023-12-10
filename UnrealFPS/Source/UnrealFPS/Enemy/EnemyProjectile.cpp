@@ -10,7 +10,7 @@
 // Sets default values
 AEnemyProjectile::AEnemyProjectile()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	InitialLifeSpan = 3.0f;
 
@@ -36,7 +36,8 @@ AEnemyProjectile::AEnemyProjectile()
 	if (!ProjectileMovementComponent)
 	{
 		// Use this component to drive this projectile's movement.
-		ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
+		ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(
+			TEXT("ProjectileMovementComponent"));
 		ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
 		ProjectileMovementComponent->InitialSpeed = 4000.0f;
 		ProjectileMovementComponent->MaxSpeed = 4000.0f;
@@ -52,14 +53,12 @@ AEnemyProjectile::AEnemyProjectile()
 void AEnemyProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
 void AEnemyProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 /**
@@ -72,7 +71,7 @@ void AEnemyProjectile::Tick(float DeltaTime)
  * @param Hit if the projectile hit something
  */
 void AEnemyProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-	FVector NormalImpulse, const FHitResult& Hit)
+                             FVector NormalImpulse, const FHitResult& Hit)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Projectile hit object: "));
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *OtherActor->GetName());
@@ -81,19 +80,20 @@ void AEnemyProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAct
 	FName OtherCompCollisionProfileName = OtherComp->GetCollisionProfileName();
 	UE_LOG(LogTemp, Warning, TEXT("Projectile hit component collision profile name: "));
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *OtherCompCollisionProfileName.ToString());
-	
-	if(OtherActor!= this && OtherComp->IsSimulatingPhysics())
+
+	if (OtherActor != this && OtherComp->IsSimulatingPhysics())
 	{
 		OtherComp->AddImpulseAtLocation(GetVelocity() * 50.0f, GetActorLocation());
 	}
 	UHealthSystem* HealthSystem = Cast<UHealthSystem>(OtherActor->GetComponentByClass(UHealthSystem::StaticClass()));
-	if(OtherActor != this && HealthSystem != nullptr)
+	if (OtherActor != this && HealthSystem != nullptr)
 	{
 		HealthSystem->TakeDamage(BaseDamage);
 	}
-	
+
 	Destroy();
 }
+
 /**
  * Add velocity to the projectile in the given direction
  * @param ShootDirection the direction the projectile will be fired in
@@ -102,4 +102,3 @@ void AEnemyProjectile::FireInDirection(const FVector& ShootDirection)
 {
 	ProjectileMovementComponent->Velocity = ShootDirection * ProjectileMovementComponent->InitialSpeed;
 }
-

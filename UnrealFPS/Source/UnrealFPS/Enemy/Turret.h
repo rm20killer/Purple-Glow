@@ -50,10 +50,12 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	UFUNCTION()
-	virtual void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	virtual void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
+	                            class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+	                            const FHitResult& SweepResult);
 
 	void RotateGun();
-	
+
 	UPROPERTY(EditAnywhere, Category = "Weapon")
 	TSubclassOf<class AEnemyProjectile> ProjectileClass;
 
@@ -77,7 +79,7 @@ public:
 	// void ReloadAnimation();
 	void Reload();
 	void Reloaded();
-	
+
 	UPROPERTY(EditDefaultsOnly, Category = "WeaponStats")
 	int MaxAmmo;
 	UPROPERTY(EditDefaultsOnly, Category = "WeaponStats")
@@ -94,10 +96,10 @@ public:
 	float MaxRecoilYaw;
 	UPROPERTY(EditDefaultsOnly, Category = "WeaponStats")
 	float ShotBeforeRecoil;
-	UPROPERTY(EditDefaultsOnly, Category = "Turret")
+	UPROPERTY(EditAnywhere, Category = "Turret")
 	float MaxSearchRotation;
-	UPROPERTY(EditDefaultsOnly, Category = "Turret")
+	UPROPERTY(EditAnywhere, Category = "Turret")
 	float RotationSpeed = 10.0f;
-	UPROPERTY(EditDefaultsOnly, Category = "Turret")
+	UPROPERTY(EditAnywhere, Category = "Turret")
 	float SearchRotationSpeed = 2.0f;
 };

@@ -41,10 +41,13 @@ void AMovingTarget::Tick(float DeltaTime)
 	FVector TargetLocation = (MovingBackToStart ? Startingpoint : Endpoint);
 
 	// Interpolate the object's position towards the target
-	float NewX = FMath::FInterpConstantTo(GetRootComponent()->GetRelativeLocation().X, TargetLocation.X, DeltaTime, MovingTargetSpeed);
-	float NewY = FMath::FInterpConstantTo(GetRootComponent()->GetRelativeLocation().Y, TargetLocation.Y, DeltaTime, MovingTargetSpeed);
-	float NewZ = FMath::FInterpConstantTo(GetRootComponent()->GetRelativeLocation().Z, TargetLocation.Z, DeltaTime, MovingTargetSpeed);
-	
+	float NewX = FMath::FInterpConstantTo(GetRootComponent()->GetRelativeLocation().X, TargetLocation.X, DeltaTime,
+	                                      MovingTargetSpeed);
+	float NewY = FMath::FInterpConstantTo(GetRootComponent()->GetRelativeLocation().Y, TargetLocation.Y, DeltaTime,
+	                                      MovingTargetSpeed);
+	float NewZ = FMath::FInterpConstantTo(GetRootComponent()->GetRelativeLocation().Z, TargetLocation.Z, DeltaTime,
+	                                      MovingTargetSpeed);
+
 	FVector InterpLocation = FVector(NewX, NewY, NewZ);
 	// Set the object's position to the interpolated location
 	GetRootComponent()->SetRelativeLocation(InterpLocation);
@@ -88,8 +91,8 @@ void AMovingTarget::TargetHit()
 			}
 			else
 			{
-			    UE_LOG(LogTemp, Warning, TEXT("MainPlayerController is null"));
-            }
+				UE_LOG(LogTemp, Warning, TEXT("MainPlayerController is null"));
+			}
 		}
 		Destroy();
 	}

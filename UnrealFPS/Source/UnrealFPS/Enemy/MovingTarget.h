@@ -11,8 +11,8 @@ UCLASS()
 class UNREALFPS_API AMovingTarget : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AMovingTarget();
 
@@ -20,7 +20,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	FVector Startingpoint;
@@ -29,9 +29,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Moving")
 	FVector Endpoint;
 	void TargetHit();
+
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Collision")
 	UBoxComponent* CollisionComponent;
 	bool MovingBackToStart = false;
-
 };

@@ -13,12 +13,12 @@ UCLASS()
 class UNREALFPS_API UHealthbar : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
 protected:
-	UPROPERTY( meta = ( BindWidget ))
-	    class UProgressBar* Healthbar;
-	UPROPERTY( meta = ( BindWidget ))
-	   class UTextBlock* CurrentHealthLabel;
-	UPROPERTY( meta = ( BindWidget ))
-	   class UTextBlock* MaxHealthLabel;
+	UPROPERTY(meta = ( BindWidget ))
+	class UProgressBar* Healthbar;
+	UPROPERTY(meta = ( BindWidget ))
+	class UTextBlock* CurrentHealthLabel;
+	UPROPERTY(meta = ( BindWidget ))
+	class UTextBlock* MaxHealthLabel;
 };

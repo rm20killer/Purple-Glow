@@ -13,10 +13,13 @@ UCLASS()
 class UNREALFPS_API AHealth_PickUp : public APickUp
 {
 	GENERATED_BODY()
+
 public:
 	AHealth_PickUp();
-	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Health" )
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	float HealthAmount;
-	
-	virtual void OnOverlapBegin( UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult ) override;
+
+	virtual void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	                            UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+	                            const FHitResult& SweepResult) override;
 };

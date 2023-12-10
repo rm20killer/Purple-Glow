@@ -10,7 +10,7 @@
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
-UDoor::UDoor()	
+UDoor::UDoor()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryComponentTick.bCanEverTick = true;
@@ -56,28 +56,29 @@ void UDoor::BeginPlay()
 void UDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	AMainPlayerController* PlayerController = Cast<AMainPlayerController>(UGameplayStatics::GetPlayerPawn( GetWorld(), 0));
-	if(bForceOpen)
+	AMainPlayerController* PlayerController = Cast<AMainPlayerController>(
+		UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+	if (bForceOpen)
 	{
 		OpenDoor(DeltaTime);
 	}
-	else if(PlayerController)
+	else if (PlayerController)
 	{
-		if(TargetNeed <= PlayerController->TargetsHit && PlayerController->Keys.Contains(KeyNeeded))
+		if (TargetNeed <= PlayerController->TargetsHit && PlayerController->Keys.Contains(KeyNeeded))
 		{
-			if(!bUsePlayerButtonPress && !bUsePlayerInRange)
+			if (!bUsePlayerButtonPress && !bUsePlayerInRange)
 			{
 				OpenDoor(DeltaTime);
 			}
-			else if(bUsePlayerInRange && !bUsePlayerButtonPress)
+			else if (bUsePlayerInRange && !bUsePlayerButtonPress)
 			{
 				GetAllValidActors(DeltaTime);
 			}
-			else if(bUsePlayerInRange && bUsePlayerButtonPress)
+			else if (bUsePlayerInRange && bUsePlayerButtonPress)
 			{
 				//check all overlapping actors
 				TArray<AActor*> OverlappingActors;
-				if(TriggerVol!=nullptr)
+				if (TriggerVol != nullptr)
 				{
 					TriggerVol->GetOverlappingActors(OverlappingActors);
 					//if overlapping actors is player
@@ -108,7 +109,7 @@ void UDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentT
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error , TEXT("Player Controller not found"))
+		UE_LOG(LogTemp, Error, TEXT("Player Controller not found"))
 	}
 }
 
@@ -121,7 +122,7 @@ void UDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentT
 void UDoor::GetAllValidActors(float DeltaTime)
 {
 	bool bIsPlayerInRange = false;
-	if(TriggerVol!=nullptr)
+	if (TriggerVol != nullptr)
 	{
 		TArray<AActor*> OverlappingActors;
 		TriggerVol->GetOverlappingActors(OverlappingActors);
@@ -140,14 +141,13 @@ void UDoor::GetAllValidActors(float DeltaTime)
 	}
 
 
-	if(bIsPlayerInRange)
+	if (bIsPlayerInRange)
 	{
 		OpenDoor(DeltaTime);
 	}
 	else
 	{
 		CloseDoor(DeltaTime);
-	
 	}
 }
 
@@ -164,7 +164,7 @@ void UDoor::OpenDoor(float DeltaTime)
 	//set the location of the door
 	GetOwner()->SetActorLocation(Location);
 	//if the door is at the target height log that the door is open
-	if(NewZ == Location.Z)
+	if (NewZ == Location.Z)
 	{
 		// UE_LOG( LogTemp, Warning, TEXT("Door Opened") );
 	}
@@ -180,7 +180,7 @@ void UDoor::CloseDoor(float DeltaTime)
 	Location.Z = FMath::FInterpConstantTo(Location.Z, StartLocation.Z, DeltaTime, MoveSpeed);
 	//set the location of the door
 	GetOwner()->SetActorLocation(Location);
-	if(StartLocation.Z == Location.Z)
+	if (StartLocation.Z == Location.Z)
 	{
 		// UE_LOG( LogTemp, Warning, TEXT("Door Close") );
 	}
@@ -192,7 +192,7 @@ void UDoor::CloseDoor(float DeltaTime)
  */
 void UDoor::CheckDoorInteraction()
 {
-	if(DoorCanBeInteracted)
+	if (DoorCanBeInteracted)
 	{
 		bForceOpen = true;
 	}
@@ -204,7 +204,6 @@ void UDoor::CheckDoorInteraction()
  */
 void UDoor::BuildText()
 {
-	return;
 	// if(KeyNeeded !=1 && TargetNeed ==0)
 	// {
 	// 	FString KeyNeededText = "key needed";
@@ -218,6 +217,4 @@ void UDoor::BuildText()
 	// }
 	// MyText->SetRelativeLocation(TextLocation);
 	// MyText->SetRelativeRotation(TextRotation);
-	
-	
 }

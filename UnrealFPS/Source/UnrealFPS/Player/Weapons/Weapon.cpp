@@ -35,19 +35,20 @@ AWeapon::AWeapon()
 	//make arrow component show up in the editor
 	// ArrowComponent->bHiddenInGame = false;
 }
-void AWeapon::OnConstruction(const FTransform &Transform)
+
+void AWeapon::OnConstruction(const FTransform& Transform)
 {
 	//add an arrow component to the gun
 	// ArrowComponent->SetupAttachment(RootComponent);
-	
+
 	// ArrowComponent->SetWorldLocation(FVector(CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset)));
 	// ArrowComponent->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
 	// FPSGunMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	// FPSGunMesh->SetCollisionProfileName(TEXT("NoCollision"));
 	SetActorEnableCollision(false);
 	FPSGunMesh->BodyInstance.SetCollisionProfileName(TEXT("Weapon"));
-	
 }
+
 // Called when the game starts or when spawned
 void AWeapon::BeginPlay()
 {
@@ -87,7 +88,7 @@ void AWeapon::Shot(bool bFireStart, FVector& cameraLocation, FRotator& cameraRot
 	if (bFireStart)
 	{
 		Fire();
-		if(bTapFire == false)
+		if (bTapFire == false)
 		{
 			GetWorldTimerManager().SetTimer(ShotHandle, this, &AWeapon::Fire, FireRate, true);
 		}
@@ -131,21 +132,21 @@ void AWeapon::Fire()
 		const FVector MuzzleLocation = CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset);
 		UE_LOG(LogTemp, Warning, TEXT("MuzzleLocation: %s"), *MuzzleLocation.ToString());
 		UE_LOG(LogTemp, Warning, TEXT("CameraLocation: %s"), *CameraLocation.ToString());
-		
+
 		FRotator MuzzleRotation = CameraRotation;
 		//do a line trace to get the location of the hit and rotate the muzzle so the projectile will fire in the correct direction
 		//used to make sure the projectile will hit the middle of the screen not matter how close the player is an object
 		const FVector StartTrace = CameraLocation;
 		const FVector Direction = CameraRotation.Vector();
 		const FVector EndTrace = StartTrace + (Direction * 10000.0f);
-		FCollisionQueryParams TraceParams(FName(TEXT("WeaponTrace")),false,this);
+		FCollisionQueryParams TraceParams(FName(TEXT("WeaponTrace")), false, this);
 		TraceParams.AddIgnoredActor(PawnInstigator);
 		TraceParams.bDebugQuery = true;
-		
+
 		FHitResult Hit;
 		GetWorld()->LineTraceSingleByChannel(Hit, StartTrace, EndTrace, ECC_Visibility, TraceParams);
 		// DrawDebugLine(GetWorld(), StartTrace, EndTrace, Hit.bBlockingHit ? FColor::Blue : FColor::Red, false, 5.0f, 0, 10.0f);
-		if(Hit.bBlockingHit)
+		if (Hit.bBlockingHit)
 		{
 			// UE_LOG(LogTemp, Warning, TEXT("Hit: %s"), *Hit.GetActor()->GetName());
 			MuzzleRotation = (Hit.ImpactPoint - MuzzleLocation).Rotation();
@@ -154,12 +155,12 @@ void AWeapon::Fire()
 		}
 		//recoil
 		//add recoil by rotating the gun by a random amount on the pitch axis
-		if(shotFired < ShotBeforeRecoil)
+		if (shotFired < ShotBeforeRecoil)
 		{
 			RecoilPitch = 0.2f;
 			RecoilYaw = 0.2f;
 		}
-		else if(shotFired >= ShotBeforeRecoil)
+		else if (shotFired >= ShotBeforeRecoil)
 		{
 			//increase recoil until the recoil is at the max
 			if (RecoilPitch < MaxRecoilPitch)
@@ -170,11 +171,10 @@ void AWeapon::Fire()
 			{
 				RecoilYaw += 1.2f;
 			}
-			
 		}
 		MuzzleRotation.Pitch += FMath::RandRange(-RecoilPitch, RecoilPitch);
 		MuzzleRotation.Yaw += FMath::RandRange(-RecoilYaw, RecoilYaw);
-		
+
 		//shot the projectile
 		if (UWorld* World = GetWorld())
 		{
@@ -203,7 +203,7 @@ void AWeapon::ReloadAnimation()
 {
 	const FQuat QuatRotation = FQuat(FRotator(0, 0, 20.0f));
 
-	FPSGunMesh->AddRelativeRotation(QuatRotation, false, 0, ETeleportType::None);
+	FPSGunMesh->AddRelativeRotation(QuatRotation, false, nullptr, ETeleportType::None);
 
 	// Check if the gun has rotated 360 degrees on the roll axis
 	if (FMath::Abs(GetActorRotation().Roll) >= 360.0f)
@@ -240,7 +240,7 @@ void AWeapon::Reloaded()
 	//reset the gun rotation
 	UE_LOG(LogTemp, Warning, TEXT("Reloaded"));
 	const FQuat QuatRotation = FQuat(FRotator(0.0f, 0.0f, 0.0f));
-	FPSGunMesh->SetRelativeRotation(QuatRotation, false, 0, ETeleportType::None);
+	FPSGunMesh->SetRelativeRotation(QuatRotation, false, nullptr, ETeleportType::None);
 	Ammo = MaxAmmo;
 	bCanShot = true;
 }
@@ -255,7 +255,6 @@ void AWeapon::UpdateLoc(FVector& cameraLocation, FRotator& cameraRotation)
 	CameraLocation.Set(cameraLocation.X, cameraLocation.Y, cameraLocation.Z);
 	CameraRotation = cameraRotation;
 }
-
 
 
 //SETTERS AND GETTERS are below
