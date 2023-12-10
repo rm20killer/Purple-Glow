@@ -7,6 +7,8 @@
 #include "../Player/MainPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 
+
+//todo: clean up the mess of code in this file
 // Sets default values
 ATurret::ATurret()
 {
@@ -83,6 +85,11 @@ void ATurret::BeginPlay()
 }
 
 // Called every frame
+/**
+ * rotate the turret if it is searching and aim at the player if it is aiming
+ * 
+ * @param DeltaTime 
+ */
 void ATurret::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -120,6 +127,17 @@ void ATurret::Tick(float DeltaTime)
 	}
 }
 
+/**
+ * If the turret is searching, check if the overlapped actor is the player
+ * if it is, check if the player is not behind a wall with a ray trace
+ * If the ray trace hit the player, set the turret's state to aiming and set the player as the target
+ * @param OverlappedComp 
+ * @param OtherActor 
+ * @param OtherComp 
+ * @param OtherBodyIndex 
+ * @param bFromSweep 
+ * @param SweepResult 
+ */
 void ATurret::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
                              int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -176,6 +194,9 @@ void ATurret::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherA
 	}
 }
 
+/**
+ * DO NOT USE
+ */
 void ATurret::RotateGun()
 {
 	// bool bRotatingLeft = (TurrertRotation.Yaw >= MaxSearchRotation);
@@ -233,6 +254,11 @@ void ATurret::Search()
 	// }
 }
 
+/**
+ * Look at the player and fire at them
+ * making sure the player is not behind a wall with a ray trace
+ * @param DeltaTime 
+ */
 void ATurret::Aim(float DeltaTime)
 {
 	// UE_LOG(LogTemp, Warning, TEXT("Aiming"));
@@ -242,6 +268,7 @@ void ATurret::Aim(float DeltaTime)
 		//if cast to player is successful
 		if (Cast<AMainPlayerController>(HitActor))
 		{
+			//cast a ray trace to the player to check if the player is not behind a wall or object
 			FHitResult HitResult;
 			FCollisionQueryParams TraceParams(FName(TEXT("TurretTrace")), false, this);
 			TraceParams.bReturnPhysicalMaterial = false;
@@ -304,6 +331,11 @@ void ATurret::Aim(float DeltaTime)
 	}
 }
 
+/**
+ * start a timer to fire the turret depending on the fire rate
+ * else stop the timer
+ * @param bFire	whether the turret should fire or not
+ */
 void ATurret::Shot(bool bFire)
 {
 	if (bFire)	
@@ -330,10 +362,11 @@ void ATurret::Fire()
 	if (Ammo > 0)
 	{
 		--Ammo;
-		UE_LOG(LogTemp, Warning, TEXT("Turret Ammo: %d"), Ammo);
+		// UE_LOG(LogTemp, Warning, TEXT("Turret Ammo: %d"), Ammo);
 	}
 	else
 	{
+		//reload the turret
 		GetWorldTimerManager().ClearTimer(ShotHandle);
 		Reload();
 		return;
@@ -341,12 +374,13 @@ void ATurret::Fire()
 
 	if (ProjectileClass)
 	{
+		//shot the projectile in the direction the turret is pointing
 		FVector BarrelForwardVector = TurretGunMeshComponent->GetForwardVector();
 		FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation() + BarrelForwardVector, HitActor->GetActorLocation() + FVector(0.0f, 0.0f, -30.0f));
 		TurrertRotation = FMath::RInterpTo(TurretGunMeshComponent->GetComponentRotation(), LookAtRotation,DeltaTimeForTick, RotationSpeed);
 		TurretGunMeshComponent->SetWorldRotation(TurrertRotation);
 
-		
+		//add recoil to the gun
 		shotFired++;
 		const FVector MuzzleLocation = TurrertLocation + FTransform(TurretGunMeshComponent->GetComponentRotation()).TransformVector(MuzzleOffset);
 		FRotator MuzzleRotation = TurretGunMeshComponent->GetComponentRotation();;
@@ -371,6 +405,7 @@ void ATurret::Fire()
 		MuzzleRotation.Yaw += FMath::RandRange(-RecoilYaw, RecoilYaw);
 		if (UWorld* World = GetWorld())
 		{
+			//spawn the projectile and fire it in the direction the turret is pointing
 			FActorSpawnParameters SpawnParams;
 			SpawnParams.Owner = this;
 			if (AEnemyProjectile* Projectile = World->SpawnActor<AEnemyProjectile>(
@@ -399,7 +434,9 @@ void ATurret::Fire()
 		UE_LOG(LogTemp, Warning, TEXT("ProjectileClass is null"));
 	}
 }
-
+/**
+ * check if the ammo is full and if not start reloading and wait 0.5 seconds
+ */
 void ATurret::Reload()
 {
 	if (Ammo == MaxAmmo || bCanShot == false)
@@ -411,6 +448,9 @@ void ATurret::Reload()
 	GetWorldTimerManager().SetTimer(ReloadHandler, this, &ATurret::Reloaded, 0.5f, false);
 }
 
+/**
+ * reload the turret, reset recoil and set the turret's state to searching
+ */
 void ATurret::Reloaded()
 {
 	// GetWorldTimerManager().SetTimer(RotationHandler, this, &ATurret::RotateGun, 0.05f, true);

@@ -30,6 +30,10 @@ void AMovingTarget::BeginPlay()
 }
 
 // Called every frame
+/**
+ * Move the target between the start and end point at a constant speed
+ * @param DeltaTime 
+ */
 void AMovingTarget::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -53,6 +57,10 @@ void AMovingTarget::Tick(float DeltaTime)
 	}
 }
 
+/**
+ * Called when the target is hit
+ * add score to the player and destroy the target
+ */
 void AMovingTarget::TargetHit()
 {
 	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();

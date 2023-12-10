@@ -10,10 +10,13 @@
  * 
  */
 UCLASS()
+
+//a key pickup that can be used to open a door
 class UNREALFPS_API AKey_PickUp : public APickUp
 {
 	GENERATED_BODY()
 public:
+	AKey_PickUp();
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "KeyID" )
 	int32 KeyID;
 	

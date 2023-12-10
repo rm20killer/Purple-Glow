@@ -7,6 +7,10 @@
 #include "GameFramework/Actor.h"
 #include "PickUp.generated.h"
 
+//a pickup that can be picked up by the player as a base class to be inherited from
+//used in:
+// - AKey_PickUp
+// - AHealth_PickUp
 UCLASS()
 class UNREALFPS_API APickUp : public AActor
 {

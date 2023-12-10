@@ -31,6 +31,9 @@ APickUp::APickUp()
 }
 
 // Called when the game starts or when spawned
+/**
+ * Set the collision radius to the pickup range
+ */
 void APickUp::BeginPlay()
 {
 	Super::BeginPlay();
@@ -39,6 +42,10 @@ void APickUp::BeginPlay()
 }
 
 // Called every frame
+/**
+ * Rotate the pickup around the z axis
+ * @param DeltaTime 
+ */
 void APickUp::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -48,6 +55,15 @@ void APickUp::Tick(float DeltaTime)
 	SetActorRotation(Rotation);
 }
 
+/**
+ * Check if the player is colliding with the pickup
+ * @param OverlappedComponent 
+ * @param OtherActor 
+ * @param OtherComp 
+ * @param OtherBodyIndex 
+ * @param bFromSweep 
+ * @param SweepResult 
+ */
 void APickUp::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {

@@ -30,6 +30,12 @@ void UScoreSystem::BeginPlay()
 
 
 // Called every frame
+/**
+ * Get the time in seconds and check what medal the player should have
+ * @param DeltaTime 
+ * @param TickType 
+ * @param ThisTickFunction 
+ */
 void UScoreSystem::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
@@ -78,6 +84,10 @@ void UScoreSystem::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 	// ...
 }
 
+/**
+ * add score to the score variable and multiply the score by the medal multiplier
+ * @param ScoreToAdd Score that will be added
+ */
 void UScoreSystem::AddScore(int32 ScoreToAdd)
 {
 	if(bIsPlatinum)
@@ -99,6 +109,9 @@ void UScoreSystem::AddScore(int32 ScoreToAdd)
 	Score += ScoreToAdd;
 }
 
+/**
+ * check if the score is higher than the highscore and if it is set the highscore to the score
+ */
 void UScoreSystem::SaveScore()
 {
 	//check if score is higher than highscore
@@ -108,22 +121,38 @@ void UScoreSystem::SaveScore()
 	}
 }
 
+/**
+ * return the current score used for the UI
+ * @return current score
+ */
 int32 UScoreSystem::GetScore()
 {
 	return Score;
 }
 
+/**
+ * 
+ * @return current HighScore
+ */
 int32 UScoreSystem::GetHighScore()
 {
 	return HighScore;
 }
 
+/**
+ * 
+ * @return current time in seconds
+ */
 int64 UScoreSystem::GetTimeInSecound()
 {
 	return TimeInSeconds;
 }
 
 
+/**
+ * finds the minutes and seconds and returns them as a string with the format MM:SS
+ * @return current time on the format MM:SS
+ */
 FString UScoreSystem::GetTimerString()
 {
 	int32 Minutes = FMath::FloorToInt(TimeInSeconds / 60);

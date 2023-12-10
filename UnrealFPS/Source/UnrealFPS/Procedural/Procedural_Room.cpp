@@ -27,44 +27,6 @@ AProcedural_Room::AProcedural_Room()
 void AProcedural_Room::BeginPlay()
 {
 	Super::BeginPlay();
-	// TArray<AActor*> AttachedActors;
-	// GetAttachedActors(AttachedActors);
-	// for (auto AttachedActor : AttachedActors)
-	// {
-	// 	AttachedActor->Destroy();
-	// }
-	// if(LeftWall)
-	// {
-	// 	LeftWall->Destroy();
-	// }
-	// if(RightWall)
-	// {
-	// 	RightWall->Destroy();
-	// }
-	// if(FrontWall)
-	// {
-	// 	FrontWall->Destroy();
-	// }
-	// if(BackWall)
-	// {
-	// 	BackWall->Destroy();
-	// }
-	// if(Ceiling)
-	// {
-	// 	Ceiling->Destroy();
-	// }
-	// if(Floor)
-	// {
-	// 	Floor->Destroy();
-	// }
-	// //get child actors and nuke them
-	// TArray<AActor*> ChildActors;
-	// GetAttachedActors(ChildActors);
-	// for (auto ChildActor : ChildActors)
-	// {
-	// 	ChildActor->Destroy();
-	// }
-	
 	CreateRoom();
 }
 
@@ -75,55 +37,24 @@ void AProcedural_Room::Tick(float DeltaTime)
 
 }
 
+/**
+ * On a change in the editor, nuke the room and rebuild it
+ * @param Transform 
+ */
 void AProcedural_Room::OnConstruction(const FTransform &Transform)
 {
 	Super::OnConstruction(Transform);
-	//get attached actors and nuke them
-	// TArray<AActor*> AttachedActors;
-	// GetAttachedActors(AttachedActors);
-	// for (auto AttachedActor : AttachedActors)
-	// {
-	// 	AttachedActor->Destroy();
-	// }
-	// if(LeftWall)
-	// {
-	// 	LeftWall->Destroy();
-	// }
-	// if(RightWall)
-	// {
-	// 	RightWall->Destroy();
-	// }
-	// if(FrontWall)
-	// {
-	// 	FrontWall->Destroy();
-	// }
-	// if(BackWall)
-	// {
-	// 	BackWall->Destroy();
-	// }
-	// if(Ceiling)
-	// {
-	// 	Ceiling->Destroy();
-	// }
-	// if(Floor)
-	// {
-	// 	Floor->Destroy();
-	// }
-	// //get child actors and nuke them
-	// TArray<AActor*> ChildActors;
-	// GetAttachedActors(ChildActors);
-	// for (auto ChildActor : ChildActors)
-	// {
-	// 	ChildActor->Destroy();
-	// }
-	
 	CreateRoom();
 }
+/**
+ * check which walls are enabled and spawn them with the correct properties
+ * Making sure to edit the old walls if they exist instead of spawning new ones
+ * If a wall is disabled, destroy it if it exists
+ */
 void AProcedural_Room::CreateRoom()
 {
 	if(bLeftWall)
 	{
-		//spawn a wall and set its properties
 		if(LeftWall == nullptr)
 		{
 			LeftWall = GetWorld()->SpawnActor<AProcedural_Wall>(AProcedural_Wall::StaticClass(), GetActorLocation(), GetActorRotation());
@@ -135,7 +66,6 @@ void AProcedural_Room::CreateRoom()
 		LeftWall->WallMaterial2 = this->WallMaterial2;
 		LeftWall->MaxYOffset = this->MaxYOffset;
 		LeftWall->SetWall(RoomLength, RoomHeight, 1);
-		//rename the wall
 	}
 	else
 	{

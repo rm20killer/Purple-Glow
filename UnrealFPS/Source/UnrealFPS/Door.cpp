@@ -198,6 +198,10 @@ void UDoor::CheckDoorInteraction()
 	}
 }
 
+/**
+ * Display text of the requirements needed to open the door on the door
+ * NOTE: This function is not finished
+ */
 void UDoor::BuildText()
 {
 	return;

@@ -429,6 +429,10 @@ void AMainPlayerController::SetUpGun()
 	}
 }
 
+/**
+ * return the health system component
+ * @return the health system component
+ */
 UScoreSystem* AMainPlayerController::GetScoreSystem()
 {
 	if(!ScoreSystem)
@@ -438,6 +442,9 @@ UScoreSystem* AMainPlayerController::GetScoreSystem()
 	return ScoreSystem;
 }
 
+/**
+ * looks through all the doors that the player is touching and checks if the player can interact with them
+ */
 void AMainPlayerController::Interact()
 {
 	//loop through all the doors

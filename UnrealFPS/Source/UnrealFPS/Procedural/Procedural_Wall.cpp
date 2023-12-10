@@ -18,18 +18,19 @@ AProcedural_Wall::AProcedural_Wall()
 	MaxYOffset = 0.0f;
 	MaxZOffset = 0.0f;
 	
-
+	//set default mesh
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> MyMesh(TEXT("/Script/Engine.StaticMesh'/Engine/BasicShapes/Cube.Cube'"));
 	WallMesh = MyMesh.Object;
 	WallMeshComponent = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("WallMesh"));
 	WallMeshComponent2 = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("WallMesh2"));
 	//make sure wallmeshCOmpoent is 0,0,0
 	WallMeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
-	//set the material of the mesh
+	//set the first material of the mesh
 	if(WallMaterial)
 	{
 		WallMeshComponent->SetMaterial(0, WallMaterial);
 	}
+	//set the material of the second mesh
 	if(WallMaterial2)
 	{
 		WallMeshComponent2->SetMaterial(0, WallMaterial2);
@@ -41,6 +42,10 @@ AProcedural_Wall::AProcedural_Wall()
 	//add a static mesh component
 }
 
+/**
+ * On a change in the editor, rebuild the wall
+ * @param Transform 
+ */
 void AProcedural_Wall::OnConstruction(const FTransform &Transform)
 {
 	Super::OnConstruction(Transform);
@@ -62,6 +67,11 @@ void AProcedural_Wall::Tick(float DeltaTime)
 
 }
 
+/**
+ * loop through the width, height and length and spawn a cube at each location
+ * Add a random offset to each cube depending on the max offset
+ * give a 10% chance to spawn a cube with the second material (glowing)
+ */
 void AProcedural_Wall::CreateWall()
 {
 	//set the mesh to the static mesh component
@@ -111,6 +121,12 @@ void AProcedural_Wall::CreateWall()
 
 }
 
+/**
+ * 
+ * @param Length Length of the wall
+ * @param Height Height of the wall
+ * @param Width Width of the wall
+ */
 void AProcedural_Wall::SetWall(int Length, int Height, int Width)
 {
 	WallLength = Length;
@@ -121,6 +137,9 @@ void AProcedural_Wall::SetWall(int Length, int Height, int Width)
 	CreateWall();
 }
 
+/**
+ * Nuke the wall and rebuild it
+ */
 void AProcedural_Wall::ResetWall()
 {
 	WallMeshComponent->ClearInstances();

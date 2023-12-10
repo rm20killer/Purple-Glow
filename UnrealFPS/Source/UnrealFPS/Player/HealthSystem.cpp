@@ -3,6 +3,9 @@
 
 #include "HealthSystem.h"
 
+#include "Blueprint/UserWidget.h"
+#include "Kismet/GameplayStatics.h"
+
 // Sets default values for this component's properties
 UHealthSystem::UHealthSystem()
 {
@@ -20,6 +23,11 @@ void UHealthSystem::BeginPlay()
 	Super::BeginPlay();
 }
 
+/**
+ * decrease health by DamageAmount and check if health is less than 0
+ * if health is less than 0, end the game
+ * @param DamageAmount Damage that will be taken
+ */
 void UHealthSystem::TakeDamage(float DamageAmount)
 {
 	Health -= DamageAmount;
@@ -31,7 +39,17 @@ void UHealthSystem::TakeDamage(float DamageAmount)
 		AActor* Owner = GetOwner();
 		if (Owner)
 		{
-			Owner->Destroy();
+			//pause the game and show cursor
+			UGameplayStatics::SetGamePaused(GetWorld(), true);
+			APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+			if (PlayerController)
+			{
+				PlayerController->bShowMouseCursor = true;
+			}
+			GameOverWidget = CreateWidget<UUserWidget>(GetWorld(), GameOverWidgetClass);
+			GameOverWidget->AddToViewport();
+			
+			// Owner->Destroy();
 		}
 	}
 }

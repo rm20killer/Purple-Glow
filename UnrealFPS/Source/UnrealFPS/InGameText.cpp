@@ -17,9 +17,22 @@ AInGameText::AInGameText()
 }
 
 // Called when the game starts or when spawned
+/**
+ * Set the text to the text string
+ */
 void AInGameText::BeginPlay()
 {
 	Super::BeginPlay();
+	MyText->SetText(FText::FromString(TextString));
+}
+
+/**
+ * On a change in the editor, set the text to the text string
+ * @param Transform 
+ */
+void AInGameText::OnConstruction(const FTransform& Transform)
+{
+	Super::OnConstruction(Transform);
 	MyText->SetText(FText::FromString(TextString));
 }
 

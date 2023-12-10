@@ -133,7 +133,8 @@ void AWeapon::Fire()
 		UE_LOG(LogTemp, Warning, TEXT("CameraLocation: %s"), *CameraLocation.ToString());
 		
 		FRotator MuzzleRotation = CameraRotation;
-		//starttrace is the middle of the screen
+		//do a line trace to get the location of the hit and rotate the muzzle so the projectile will fire in the correct direction
+		//used to make sure the projectile will hit the middle of the screen not matter how close the player is an object
 		const FVector StartTrace = CameraLocation;
 		const FVector Direction = CameraRotation.Vector();
 		const FVector EndTrace = StartTrace + (Direction * 10000.0f);
@@ -151,6 +152,7 @@ void AWeapon::Fire()
 			UE_LOG(LogTemp, Warning, TEXT("CameraRotation: %s"), *CameraRotation.ToString());
 			UE_LOG(LogTemp, Warning, TEXT("MuzzleRotation: %s"), *MuzzleRotation.ToString());
 		}
+		//recoil
 		//add recoil by rotating the gun by a random amount on the pitch axis
 		if(shotFired < ShotBeforeRecoil)
 		{
@@ -170,10 +172,10 @@ void AWeapon::Fire()
 			}
 			
 		}
-			MuzzleRotation.Pitch += FMath::RandRange(-RecoilPitch, RecoilPitch);
-			MuzzleRotation.Yaw += FMath::RandRange(-RecoilYaw, RecoilYaw);
+		MuzzleRotation.Pitch += FMath::RandRange(-RecoilPitch, RecoilPitch);
+		MuzzleRotation.Yaw += FMath::RandRange(-RecoilYaw, RecoilYaw);
 		
-		//shot
+		//shot the projectile
 		if (UWorld* World = GetWorld())
 		{
 			FActorSpawnParameters SpawnParams;
