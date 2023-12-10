@@ -3,6 +3,7 @@
 
 #include "Health_PickUp.h"
 
+#include "Kismet/GameplayStatics.h"
 #include "Player/MainPlayerController.h"
 
 AHealth_PickUp::AHealth_PickUp()
@@ -20,6 +21,10 @@ void AHealth_PickUp::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AA
 	if (PlayerController != nullptr)
 	{
 		PlayerController->HealthSystem->AddHealth(HealthAmount);
+		if(PickUpSound != nullptr)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, PickUpSound, GetActorLocation());
+		}
 		Destroy();
 	}
 }

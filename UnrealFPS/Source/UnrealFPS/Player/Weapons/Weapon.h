@@ -52,6 +52,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	USoundBase* FireSound;
 
+	//todo:add
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	UParticleSystem* MuzzleFlash;
 

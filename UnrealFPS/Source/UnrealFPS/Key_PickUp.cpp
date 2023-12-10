@@ -3,6 +3,7 @@
 
 #include "Key_PickUp.h"
 
+#include "Kismet/GameplayStatics.h"
 #include "Player/MainPlayerController.h"
 
 AKey_PickUp::AKey_PickUp()
@@ -26,6 +27,10 @@ void AKey_PickUp::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActo
 		}
 		UE_LOG(LogTemp, Warning, TEXT("Player Overlap"));
 		PlayerController->Keys.AddUnique(KeyID);
+		if(PickUpSound != nullptr)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, PickUpSound, GetActorLocation());
+		}
 		Destroy();
 	}
 }
