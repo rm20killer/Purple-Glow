@@ -42,6 +42,8 @@ public:
 	bool bUsePlayerButtonPress = false;
 	UPROPERTY(EditAnywhere, Category = "Door Interaction")
 	bool bShowText = false;
+	UPROPERTY(EditAnywhere, Category = "Door")
+	USoundBase* Sound;
 	// UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Door Interaction/Text")
 	// UTextRenderComponent* MyText;
 	// UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Door Interaction/Text")
@@ -55,6 +57,7 @@ public:
 	void CheckDoorInteraction();
 
 private:
+	bool bHasPlayedSound = false;
 	UPROPERTY(EditAnywhere, Category = "Door Interaction")
 	bool bForceOpen = false;
 	bool DoorCanBeInteracted = false;
@@ -66,10 +69,6 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Door")
 	ATriggerVolume* TriggerVol;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Door")
-	USoundBase* FireSound;
-
 	//inputs
 	FVector Location;
 	FVector StartLocation;

@@ -5,8 +5,6 @@
 
 #include "Player/MainPlayerController.h"
 #include "GameFramework/Controller.h"
-#include "EnhancedInputComponent.h"
-#include "EnhancedInputSubsystems.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -167,6 +165,20 @@ void UDoor::OpenDoor(float DeltaTime)
 	if (NewZ == Location.Z)
 	{
 		// UE_LOG( LogTemp, Warning, TEXT("Door Opened") );
+		bHasPlayedSound = false; 
+	}
+	else
+	{
+		//play sound
+		if (!bHasPlayedSound)
+		{
+			if (Sound != nullptr)
+			{
+				UGameplayStatics::PlaySoundAtLocation(GetOwner(), Sound, GetOwner()->GetActorLocation());
+			}
+
+			bHasPlayedSound = true; 
+		}
 	}
 }
 
@@ -182,7 +194,21 @@ void UDoor::CloseDoor(float DeltaTime)
 	GetOwner()->SetActorLocation(Location);
 	if (StartLocation.Z == Location.Z)
 	{
+		bHasPlayedSound = false; 
 		// UE_LOG( LogTemp, Warning, TEXT("Door Close") );
+	}
+	else
+	{
+		//play sound
+		if (!bHasPlayedSound)
+		{
+			if (Sound != nullptr)
+			{
+				UGameplayStatics::PlaySoundAtLocation(GetOwner(), Sound, GetOwner()->GetActorLocation());
+			}
+
+			bHasPlayedSound = true; 
+		}
 	}
 }
 
