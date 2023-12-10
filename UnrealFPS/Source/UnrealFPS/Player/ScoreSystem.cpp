@@ -3,6 +3,9 @@
 
 #include "ScoreSystem.h"
 
+#include "GameFramework/SaveGame.h"
+#include "Kismet/GameplayStatics.h"
+
 // Sets default values for this component's properties
 UScoreSystem::UScoreSystem()
 {
@@ -13,6 +16,7 @@ UScoreSystem::UScoreSystem()
 	HighScore = 0;
 	// TimeInMilliseconds = 0;
 	TimeInSeconds = 0;
+	TotalTimeInSeconds = 0;
 	bIsTimerActive = true;
 	
 	// ...
@@ -45,28 +49,28 @@ void UScoreSystem::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 		TimeInSeconds = GetWorld()->GetTimeSeconds();
 		
 	}
-	if (TimeInSeconds <= PlatinumTime * 60)
+	if (TimeInSeconds+TotalTimeInSeconds <= PlatinumTime * 60)
 	{
 		bIsPlatinum = true;
 		bIsGold = false;
 		bIsSilver = false;
 		bIsBronze = false;
 	}
-	else if (TimeInSeconds <= GoldTime * 60)
+	else if (TimeInSeconds+TotalTimeInSeconds <= GoldTime * 60)
 	{
 		bIsPlatinum = false;
 		bIsGold = true;
 		bIsSilver = false;
 		bIsBronze = false;
 	}
-	else if (TimeInSeconds <= SilverTime * 60)
+	else if (TimeInSeconds+TotalTimeInSeconds <= SilverTime * 60)
 	{
 		bIsPlatinum = false;
 		bIsGold = false;
 		bIsSilver = true;
 		bIsBronze = false;
 	}
-	else if (TimeInSeconds <= BrozenTime * 60)
+	else if (TimeInSeconds+TotalTimeInSeconds <= BrozenTime * 60)
 	{
 		bIsPlatinum = false;
 		bIsGold = false;
@@ -119,6 +123,12 @@ void UScoreSystem::SaveScore()
 	{
 		HighScore = Score;
 	}
+	//save score
+	UFunction* Function = GetOwner()->FindFunction(TEXT("Save"));
+	if(Function)
+	{
+		GetOwner()->ProcessEvent(Function, nullptr);
+	}
 }
 
 /**
@@ -145,7 +155,7 @@ int32 UScoreSystem::GetHighScore()
  */
 int64 UScoreSystem::GetTimeInSecound()
 {
-	return TimeInSeconds;
+	return TimeInSeconds+TotalTimeInSeconds;
 }
 
 
@@ -155,8 +165,9 @@ int64 UScoreSystem::GetTimeInSecound()
  */
 FString UScoreSystem::GetTimerString()
 {
-	int32 Minutes = FMath::FloorToInt(TimeInSeconds / 60);
-	int32 Seconds = FMath::FloorToInt(TimeInSeconds - (Minutes * 60));
+	float total = TimeInSeconds+TotalTimeInSeconds;
+	int32 Minutes = FMath::FloorToInt(total / 60);
+	int32 Seconds = FMath::FloorToInt(total - (Minutes * 60));
 	FString TimerString = FString::Printf(TEXT("%02d:%02d"), Minutes, Seconds);
 	return TimerString;
 }

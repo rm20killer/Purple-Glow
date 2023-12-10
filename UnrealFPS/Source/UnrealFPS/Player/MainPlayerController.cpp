@@ -6,6 +6,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Blueprint/UserWidget.h"
 #include "UnrealFPS/Door.h"
 #include "Weapons/Weapon.h"
 
@@ -32,9 +33,21 @@ void AMainPlayerController::BeginPlay()
 	ScoreSystem->RegisterComponent();
 	HealthSystem = NewObject<UHealthSystem>(this, UHealthSystem::StaticClass());
 	HealthSystem->RegisterComponent();
-
 	Keys.Add(1);
-	
+	//get level name
+	FString LevelName = GetWorld()->GetMapName();
+	if(LevelName=="Level1")
+	{
+		
+	}
+	else
+	{
+		UFunction* Function = FindFunction("LoadSave");
+		if(Function)
+		{
+			GetOwner()->ProcessEvent(Function, nullptr);
+		}
+	}
 }
 
 // Called every frame
@@ -247,6 +260,16 @@ void AMainPlayerController::StopSliding()
 }
 
 /**
+ * show the game over widget
+ */
+void AMainPlayerController::Death()
+{
+	GameOverWidget = CreateWidget<UUserWidget>(GetWorld(), GameOverWidgetClass);
+	GameOverWidget->AddToViewport();
+	ScoreSystem->SaveScore();
+}
+
+/**
  * start firing the weapon
  */
 void AMainPlayerController::Shot()
@@ -435,6 +458,7 @@ void AMainPlayerController::SetUpGun()
  */
 UScoreSystem* AMainPlayerController::GetScoreSystem()
 {
+	
 	if(!ScoreSystem)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("ScoreSystem is null"));
@@ -455,7 +479,8 @@ void AMainPlayerController::Interact()
 			//if the door is not null
 			if (Element)
 			{
-				//get the door component
+				
+				//get the door component from the door
 				UDoor* DoorComponent = Cast<UDoor>(Element->GetComponentByClass(UDoor::StaticClass()));
 				//if the door component is not null
 				if (DoorComponent)

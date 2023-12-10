@@ -91,8 +91,16 @@ public:
 	UInputAction* NextWeaponAction;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Weapon")
 	TArray<UChildActorComponent*> WeaponsArr;
+
+	//other
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Door")
 	TArray<AActor*> DoorArr;
+	void Death();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HealthSystem")
+	TSubclassOf<UUserWidget> GameOverWidgetClass;
+    
+	UPROPERTY()
+	UUserWidget* GameOverWidget;
 private:
 	// - weapons functions
 	void Shot();
@@ -127,6 +135,13 @@ public:
 	TArray<int32> Keys;
 	UPROPERTY(VisibleAnywhere, Category = "Stats")
 	int32 TargetsHit = 0;
+
+	// UFUNCTION(BlueprintCallable, Category = "Stats")
+	// int32 GetScore();
+	// UFUNCTION(BlueprintCallable, Category = "Stats")
+    // int32 GetHighScore();
+	// UFUNCTION(BlueprintCallable, Category = "Stats")
+	// float TotalTimeInSeconds();
 	
 	UFUNCTION()
 	void Interact();

@@ -147,10 +147,10 @@ void AWeapon::Fire()
 		// DrawDebugLine(GetWorld(), StartTrace, EndTrace, Hit.bBlockingHit ? FColor::Blue : FColor::Red, false, 5.0f, 0, 10.0f);
 		if(Hit.bBlockingHit)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Hit: %s"), *Hit.GetActor()->GetName());
+			// UE_LOG(LogTemp, Warning, TEXT("Hit: %s"), *Hit.GetActor()->GetName());
 			MuzzleRotation = (Hit.ImpactPoint - MuzzleLocation).Rotation();
-			UE_LOG(LogTemp, Warning, TEXT("CameraRotation: %s"), *CameraRotation.ToString());
-			UE_LOG(LogTemp, Warning, TEXT("MuzzleRotation: %s"), *MuzzleRotation.ToString());
+			// UE_LOG(LogTemp, Warning, TEXT("CameraRotation: %s"), *CameraRotation.ToString());
+			// UE_LOG(LogTemp, Warning, TEXT("MuzzleRotation: %s"), *MuzzleRotation.ToString());
 		}
 		//recoil
 		//add recoil by rotating the gun by a random amount on the pitch axis

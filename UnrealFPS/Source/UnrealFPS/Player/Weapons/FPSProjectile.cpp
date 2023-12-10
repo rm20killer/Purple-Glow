@@ -88,13 +88,13 @@ void AFPSProjectile::Tick(float DeltaTime)
 void AFPSProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	//Debug
-	UE_LOG(LogTemp, Warning, TEXT("Projectile hit object: "));
-	UE_LOG(LogTemp, Warning, TEXT("%s"), *OtherActor->GetName());
-	UE_LOG(LogTemp, Warning, TEXT("Projectile hit component: "));
-	UE_LOG(LogTemp, Warning, TEXT("%s"), *OtherComp->GetName());
-	FName OtherCompCollisionProfileName = OtherComp->GetCollisionProfileName();
-	UE_LOG(LogTemp, Warning, TEXT("Projectile hit component collision profile name: "));
-	UE_LOG(LogTemp, Warning, TEXT("%s"), *OtherCompCollisionProfileName.ToString());
+	// UE_LOG(LogTemp, Warning, TEXT("Projectile hit object: "));
+	// UE_LOG(LogTemp, Warning, TEXT("%s"), *OtherActor->GetName());
+	// UE_LOG(LogTemp, Warning, TEXT("Projectile hit component: "));
+	// UE_LOG(LogTemp, Warning, TEXT("%s"), *OtherComp->GetName());
+	// FName OtherCompCollisionProfileName = OtherComp->GetCollisionProfileName();
+	// UE_LOG(LogTemp, Warning, TEXT("Projectile hit component collision profile name: "));
+	// UE_LOG(LogTemp, Warning, TEXT("%s"), *OtherCompCollisionProfileName.ToString());
 	
 	if (OtherActor != this && HitComponent->IsSimulatingPhysics())
 	{

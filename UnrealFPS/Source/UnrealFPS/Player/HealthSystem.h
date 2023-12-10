@@ -41,11 +41,6 @@ public:
 	void SetMaxHealth(float val) { MaxHealth = val; }
 
 	void TakeDamage(float DamageAmount);
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    TSubclassOf<UUserWidget> GameOverWidgetClass;
-    
-    UPROPERTY()
-    UUserWidget* GameOverWidget;
+	
 	
 };

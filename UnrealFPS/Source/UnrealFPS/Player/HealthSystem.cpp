@@ -3,6 +3,7 @@
 
 #include "HealthSystem.h"
 
+#include "MainPlayerController.h"
 #include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -46,9 +47,12 @@ void UHealthSystem::TakeDamage(float DamageAmount)
 			{
 				PlayerController->bShowMouseCursor = true;
 			}
-			GameOverWidget = CreateWidget<UUserWidget>(GetWorld(), GameOverWidgetClass);
-			GameOverWidget->AddToViewport();
-			
+			//show game over widget
+			AMainPlayerController* MainPlayerController = Cast<AMainPlayerController>(Owner);
+			if (MainPlayerController)
+			{
+				MainPlayerController->Death();
+			}
 			// Owner->Destroy();
 		}
 	}

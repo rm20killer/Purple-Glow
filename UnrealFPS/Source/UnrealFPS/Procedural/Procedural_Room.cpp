@@ -53,6 +53,7 @@ void AProcedural_Room::OnConstruction(const FTransform &Transform)
  */
 void AProcedural_Room::CreateRoom()
 {
+	//check if all walls exist
 	if(bLeftWall)
 	{
 		if(LeftWall == nullptr)
