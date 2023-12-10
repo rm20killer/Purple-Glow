@@ -47,7 +47,7 @@ public:
 	
 	void AddScore(int32 ScoreToAdd);
 	void SaveScore();
-	void LoadScore();
+	// void LoadScore();
 	UFUNCTION(BlueprintCallable, Category = "ScoreSystem")
 	int32 GetScore();
 	UFUNCTION(BlueprintCallable, Category = "ScoreSystem")
