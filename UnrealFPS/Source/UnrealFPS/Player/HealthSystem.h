@@ -22,7 +22,6 @@ protected:
 
 	FVector MovementVelocity;
 
-	float HealthTweenDirection;
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")

@@ -423,7 +423,7 @@ float AMainPlayerController::GetAmmoPer()
 
 
 /**
- * Do not touch this function, a slight change can break the guns
+ * Do not touch this function, a slight change broke the guns
  * loop through all the weapons and disable them
  * enable the first weapon
  */
