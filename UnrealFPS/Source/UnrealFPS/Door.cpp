@@ -85,11 +85,13 @@ void UDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentT
 						if (Cast<AMainPlayerController>(Actor))
 						{
 							//add the door to the player controller and set the door to be interacted with
-							Cast<AMainPlayerController>(Actor)->DoorArr.Add(this->GetOwner());
+							Cast<AMainPlayerController>(Actor)->DoorArr.AddUnique(this->GetOwner());
 							DoorCanBeInteracted = true;
 						}
 						else
 						{
+							//remove the door from the player controller and set the door to not be interacted with
+							// Cast<AMainPlayerController>(Actor)->DoorArr.Remove(this->GetOwner());
 							DoorCanBeInteracted = false;
 						}
 					}
